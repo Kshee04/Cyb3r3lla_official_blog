@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>picoCTF Writeup | Guess My Cheese</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #111111;
+            --accent-blue: #00e5ff; /* Cyber Blue */
+            --text-main: #e0e0e0;
+            --text-dim: #999;
+            --border-color: #222;
+            --mono-font: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 90%;
+            padding: 4rem 0;
+        }
+
+        /* Hero Section */
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .category {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+          font-size: 3rem;
+          font-weight: 700;
+          margin: 0;
+          letter-spacing: -1px;
+          background: linear-gradient(to right, #fff, #666);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+}
+
+        /* Section Layout */
+        section {
+            margin-bottom: 4rem;
+        }
+
+        .section-num {
+            font-family: var(--mono-font);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-left: 3px solid var(--accent-blue);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        /* Blocks & Code */
+        code {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            background: rgba(0, 229, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--mono-font);
+            overflow-x: auto;
+            color: var(--accent-blue);
+        }
+
+        /* Table Design */
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dim);
+        }
+
+        tr:hover td {
+            color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Flag Box */
+        .flag-box {
+            background: linear-gradient(45deg, #001a1a, #000);
+            border: 1px solid var(--accent-blue);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 4px;
+            margin-top: 2rem;
+        }
+
+        .flag-label {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .flag-text {
+            font-family: var(--mono-font);
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
+        /* Footer Decor */
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-align: right;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="category">Cryptography // CTF Writeup</span>
+        <h1>Guess My Cheese (Part 1)</h1>
+    </header>
+
+    <section>
+        <div class="section-num">/ 01</div>
+        <h2>The Challenge</h2>
+        <p>A cryptography challenge focused on decrypting a secret cheese password. The interface provides a netcat connection with two operations: <code>(g)uess</code> or <code>(e)ncrypt</code>.</p>
+    </section>
+
+    <section>
+        <div class="section-num">/ 02</div>
+        <h2>Identification</h2>
+        <p>The hint explicitly mentioned linear equations and an <strong>"affinity"</strong> for them—a textbook indicator of the <strong>Affine Cipher</strong>.</p>
+        <pre>
+Encryption: E(x) = (ax + b) mod 26
+Decryption: D(x) = a⁻¹(x - b) mod 26
+        </pre>
+    </section>
+
+    <section>
+        <div class="section-num">/ 03</div>
+        <h2>Strategy & Logic</h2>
+        <p>Using a <strong>Known Plaintext Attack</strong>, I fed the oracle the word <code>CHEDDAR</code> to extract the keys.</p>
+        <div style="display: flex; gap: 2rem; margin-top: 1rem;">
+            <div>
+                <span style="font-size: 0.8rem; color: var(--accent-blue);">PLAINTEXT</span>
+                <div style="font-family: var(--mono-font); font-size: 1.2rem;">CHEDDAR</div>
+            </div>
+            <div>
+                <span style="font-size: 0.8rem; color: var(--accent-blue);">CIPHERTEXT</span>
+                <div style="font-family: var(--mono-font); font-size: 1.2rem;">NCTQQHG</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 04</div>
+        <h2>Cracking the Keys</h2>
+        <p>By mapping <code>A=0</code>, we isolate the variables:</p>
+        <pre>
+1. Finding b:
+   Plaintext A (0) -> Ciphertext H (7)
+   E(0) = (a * 0 + b) = 7  => b = 7
+
+2. Finding a:
+   Plaintext C (2) -> Ciphertext N (13)
+   2a + 7 = 13 mod 26 
+   2a = 6  => a = 3
+
+3. Finding Inverse:
+   3 * 9 = 27 ≡ 1 mod 26 => a_inv = 9
+        </pre>
+    </section>
+
+    <section>
+        <div class="section-num">/ 05</div>
+        <h2>Final Decryption</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cipher</th>
+                        <th>Index (x)</th>
+                        <th>9(x - 7) mod 26</th>
+                        <th>Plaintext</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Q</td><td>16</td><td>9(9) = 81 = 3</td><td><strong>D</strong></td></tr>
+                    <tr><td>H</td><td>7</td><td>9(0) = 0</td><td><strong>A</strong></td></tr>
+                    <tr><td>G</td><td>6</td><td>9(-1) = -9 = 17</td><td><strong>R</strong></td></tr>
+                    <tr><td>H</td><td>7</td><td>9(0) = 0</td><td><strong>A</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p>Full Decrypted Password: <code>DARALAGJAZSKYZOK</code></p>
+    </section>
+
+    <div class="flag-box">
+        <span class="flag-label">CAPTURE THE FLAG</span>
+        <div class="flag-text">picoCTF{ChEeSy86ec32f4}</div>
+    </div>
+
+    <footer>
+        &copy; 2026 // INFOSEC & FORENSICS // INNOVATION AT EVERY TURN
+    </footer>
+</div>
+
+</body>
+</html>

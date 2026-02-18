@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>picoCTF Writeup | Flag in Flame</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #111111;
+            --accent-blue: #00e5ff;
+            --text-main: #e0e0e0;
+            --text-dim: #999;
+            --border-color: #222;
+            --mono-font: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 90%;
+            padding: 4rem 0;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .category {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #666);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        .section-num {
+            font-family: var(--mono-font);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-left: 3px solid var(--accent-blue);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        code {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            background: rgba(0, 229, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--mono-font);
+            overflow-x: auto;
+            color: var(--accent-blue);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dim);
+        }
+
+        tr:hover td {
+            color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .flag-box {
+            background: linear-gradient(45deg, #001a1a, #000);
+            border: 1px solid var(--accent-blue);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 4px;
+            margin-top: 2rem;
+        }
+
+        .flag-label {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .flag-text {
+            font-family: var(--mono-font);
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="writeups.html" class="back-link">← Back to Writeups</a>
+        
+        <header>
+            <span class="category">Forensics // CTF Writeup</span>
+            <h1>Flag in Flame</h1>
+        </header>
+
+        <section>
+            <div class="section-num">/ 01</div>
+            <h2>The Challenge</h2>
+            <p>This forensics challenge presents an unusual log file containing a massive block of encoded text. The goal is to decode the data and uncover the concealed flag hidden within the visual elements of the result.</p>
+        </section>
+
+        <section>
+            <div class="section-num">/ 02</div>
+            <h2>Initial Decoding</h2>
+            <p>Analyzing the raw log reveals a Base64 encoded string. The header <code>iVBORw0KGgo</code> identifies the binary as a <strong>PNG image</strong>.</p>
+            <pre>hackitect@Cyb3r3lla:~$ base64 -d "logs (1).txt" > flag.png</pre>
+            <p>The resulting image dimensions are <strong>896 x 1152 pixels</strong>.</p>
+        </section>
+
+        <section>
+            <div class="section-num">/ 03</div>
+            <h2>Visual Analysis & Steganography</h2>
+            <p>Initial inspection of <code>flag.png</code> shows a digital hacker figure. A visible hexadecimal string is located at the bottom of the image.</p>
+            <p>Further steganographic analysis was conducted using <strong>Least Significant Bit (LSB)</strong> extraction and <strong>Blue Channel</strong> isolation to verify if the string was a decoy.</p>
+        </section>
+
+        <section>
+            <div class="section-num">/ 04</div>
+            <h2>Cracking the Hex</h2>
+            <p>The hexadecimal string found on the image provides the path to the flag:</p>
+            <pre>HEX: 7069636F4354467B666F72656E736963735F616E616C797369735F69735F616D617A696E675F62653836303237397D</pre>
+            <p>Using <code>xxd</code> to decode the string:</p>
+            <pre>echo "7069636F4354467B666F72656E736963735F616E616C797369735F69735F616D617A696E675F62653836303237397D" | xxd -r -p</pre>
+        </section>
+
+        <section>
+            <div class="section-num">/ 05</div>
+            <h2>Final Result</h2>
+            <p>The decoded hexadecimal string reveals the flag in the standard format.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hex Pair</th>
+                            <th>ASCII Character</th>
+                            <th>Hex Pair</th>
+                            <th>ASCII Character</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>70</td><td>p</td><td>69</td><td>i</td></tr>
+                        <tr><td>63</td><td>c</td><td>6F</td><td>o</td></tr>
+                        <tr><td>43</td><td>C</td><td>54</td><td>T</td></tr>
+                        <tr><td>46</td><td>F</td><td>7B</td><td>{</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="flag-box">
+            <span class="flag-label">CAPTURE THE FLAG</span>
+            <div class="flag-text">picoCTF{forensics_analysis_is_amazing_be860279}</div>
+        </div>
+
+        <footer>
+            &copy; 2026 // CYB3R3LLA // FORENSICS & STEGANOGRAPHY
+        </footer>
+    </div>
+</body>
+</html>

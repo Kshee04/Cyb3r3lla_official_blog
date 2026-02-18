@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyb3r3lla · Writeups</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CYB3R3LLA WRITEUPS PAGE - MATCHES MAIN SITE STYLE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Chakra Petch', sans-serif;
+            background: #0a0c10;
+            color: #e2e8f0;
+            line-height: 1.6;
+            padding-top: 80px;
+        }
+        
+        /* TOP NAVIGATION - IDENTICAL TO MAIN SITE */
+        .cyber-top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 2.5rem;
+            background: rgba(6, 8, 12, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.4);
+            z-index: 10000;
+            font-family: 'Chakra Petch', sans-serif;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        .cyber-logo a {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-decoration: none;
+            background: linear-gradient(145deg, #c084fc, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 12px rgba(168,85,247,0.5);
+        }
+        
+        .cyber-nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+        
+        .cyber-nav-links a {
+            color: #f0f0ff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            padding: 0.5rem 0;
+        }
+        
+        .cyber-nav-links a:hover {
+            color: #c084fc;
+            text-shadow: 0 0 8px #a78bfa;
+        }
+        
+        .cyber-nav-links a.active {
+            color: #c084fc;
+            border-bottom: 2px solid #a78bfa;
+        }
+        
+        .menu-btn {
+            background: rgba(139, 92, 246, 0.25);
+            padding: 0.5rem 1.8rem;
+            border-radius: 40px;
+            border: 1px solid #a78bfa;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .menu-btn:hover {
+            background: #7e5bef;
+            border-color: white;
+        }
+        
+        /* PAGE HEADER */
+        .writeups-header {
+            background: linear-gradient(145deg, #0f1117, #080a0e);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+            margin-bottom: 3rem;
+        }
+        
+        .writeups-header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 4px;
+        }
+        
+        .writeups-header h1 span {
+            background: linear-gradient(145deg, #c084fc, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .writeups-header p {
+            font-size: 1.2rem;
+            color: #a0aec0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .slash {
+            color: #a78bfa;
+            font-weight: 700;
+            margin: 0 0.5rem;
+        }
+        
+        /* FILTER TABS */
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            padding: 0 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .filter-btn {
+            background: rgba(18, 22, 30, 0.8);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #cbd5e0;
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: #a78bfa;
+            color: white;
+        }
+        
+        /* WRITEUPS GRID */
+        .writeups-grid {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 2rem 5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 2rem;
+        }
+        
+        /* WRITEUP CARD */
+        .writeup-card {
+            background: rgba(18, 22, 30, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+        }
+        
+        .writeup-card:hover {
+            transform: translateY(-6px);
+            border-color: #a78bfa;
+            box-shadow: 0 20px 30px -8px rgba(139,92,246,0.2);
+            background: rgba(22, 26, 34, 0.8);
+        }
+        
+        .card-image {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .card-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(139, 92, 246, 0.9);
+            backdrop-filter: blur(4px);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .card-difficulty {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .difficulty-easy { color: #4ade80; }
+        .difficulty-medium { color: #fbbf24; }
+        .difficulty-hard { color: #f87171; }
+        .difficulty-insane { color: #f43f5e; }
+        
+        .card-content {
+            padding: 1.8rem 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+            color: white;
+        }
+        
+        .card-title a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .card-title a:hover {
+            color: #c084fc;
+        }
+        
+        .card-excerpt {
+            color: #a0aec0;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex: 1;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+            padding-top: 1.2rem;
+        }
+        
+        .read-more {
+            color: #c084fc;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.2s;
+        }
+        
+        .read-more:hover {
+            gap: 0.8rem;
+            color: #a855f7;
+        }
+        
+        .read-more svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .card-stats {
+            display: flex;
+            gap: 1rem;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+        
+        .card-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        /* PAGINATION */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            padding-bottom: 4rem;
+        }
+        
+        .page-btn {
+            background: rgba(18, 22, 30, 0.8);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #cbd5e0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .page-btn:hover,
+        .page-btn.active {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: #a78bfa;
+            color: white;
+        }
+        
+        /* FOOTER */
+        .footer {
+            background: #080a0e;
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 2rem;
+            text-align: center;
+            color: #718096;
+            margin-top: 2rem;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .cyber-top-nav {
+                padding: 0.6rem 1.2rem;
+            }
+            .cyber-nav-links {
+                gap: 1rem;
+            }
+            .cyber-logo a {
+                font-size: 1.4rem;
+            }
+            body {
+                padding-top: 70px;
+            }
+            .writeups-header h1 {
+                font-size: 2.5rem;
+            }
+            .writeups-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1.5rem 3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .cyber-nav-links a:not(.menu-btn) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TOP NAVIGATION - IDENTICAL TO MAIN SITE -->
+    <div class="cyber-top-nav">
+        <div class="cyber-logo">
+            <a href="index.html">Cyb3r3lla</a>
+        </div>
+       <div class="cyber-nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="writeups.html">Writeups</a>
+            <a href="binary-exploitation.html">Binary Exp</a>
+            <a href="#" id="top-menu-button" class="menu-btn">Menu</a>//
+        </div>
+    </div>
+
+    <!-- WRITEUPS HEADER -->
+    <div class="writeups-header">
+        <h1>/ <span>writeups</span> /</h1>
+        <p>Capture The Flag · Security Research · Vulnerability Analysis</p>
+        <div style="margin-top: 1.5rem; color: #a78bfa; font-size: 0.9rem; letter-spacing: 2px;">
+            <span>47 writeups</span> <span class="slash">/</span> <span>13 machines</span> <span class="slash">/</span> <span>10 challenges</span>
+        </div>
+    </div>
+
+    <!-- FILTER TABS -->
+    <div class="filter-container">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="thm">TryHackMe</button>
+        <button class="filter-btn" data-filter="htb">HackTheBox</button>
+        <button class="filter-btn" data-filter="ctf">CTF</button>
+        <button class="filter-btn" data-filter="forensics">Forensics</button>
+        <button class="filter-btn" data-filter="crypto">Cryptography</button>
+        <button class="filter-btn" data-filter="research">Research</button>
+        <button class="filter-btn" data-filter="easy">Easy</button>
+        <button class="filter-btn" data-filter="medium">Medium</button>
+        <button class="filter-btn" data-filter="hard">Hard</button>
+    </div>
+
+    <!-- WRITEUPS GRID -->
+    <div class="writeups-grid">
+        <!-- NEW CARD: picoCTF - Flag in Flame (ADDED FIRST - FORENSICS) -->
+        <div class="writeup-card" data-category="ctf forensics easy">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999a0f79830abb0ccbd5_offers-card8.webp');">
+                <span class="card-category">picoCTF · Forensics</span>
+                <span class="card-difficulty difficulty-easy">EASY</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>Flag in Flame</span>
+                    <span>Base64 · PNG · Hex</span>
+                </div>
+                <h3 class="card-title"><a href="writeup-flag-in-flame.html">picoCTF: Flag in Flame Walkthrough</a></h3>
+                <div class="card-excerpt">
+                    Base64 decoded PNG image reveals hexadecimal string. Converting hex to ASCII exposes the flag hidden in plain sight.
+                </div>
+                <div class="card-footer">
+                    <a href="writeup-flag-in-flame.html" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 Today</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW CARD: picoCTF - Guess My Cheese (ADDED SECOND - CRYPTOGRAPHY) -->
+        <div class="writeup-card" data-category="ctf crypto easy">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999b5b21e92c15393c11_offers-card5.webp');">
+                <span class="card-category">picoCTF · Crypto</span>
+                <span class="card-difficulty difficulty-easy">EASY</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>Guess My Cheese</span>
+                    <span>Affine Cipher</span>
+                </div>
+                <h3 class="card-title"><a href="writeup-guess-my-cheese.html">picoCTF: Guess My Cheese (Part 1) Walkthrough</a></h3>
+                <div class="card-excerpt">
+                    Affine cipher cryptanalysis using a known plaintext attack. Decrypting the secret cheese password with modular arithmetic.
+                </div>
+                <div class="card-footer">
+                    <a href="writeup-guess-my-cheese.html" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 Today</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 1 - TryHackMe - Pickle Rick -->
+        <div class="writeup-card" data-category="thm easy">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999b37c8c3e335cd46cc_offers-card3.webp');">
+                <span class="card-category">TryHackMe</span>
+                <span class="card-difficulty difficulty-easy">EASY</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>Pickle Rick</span>
+                    <span>Linux · Web</span>
+                </div>
+                <h3 class="card-title"><a href="#">Pickle Rick: A Wubbalubbadubdub! Walkthrough</a></h3>
+                <div class="card-excerpt">
+                    Command injection, directory traversal, and privilege escalation on a Rick and Morty themed machine. Full root access achieved.
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 2 days ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2 - HackTheBox - Lame -->
+        <div class="writeup-card" data-category="htb easy">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999975a0f3e55b66ee5f_offers-card1.webp');">
+                <span class="card-category">HackTheBox</span>
+                <span class="card-difficulty difficulty-easy">EASY</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>Lame</span>
+                    <span>Samba · CVE-2007-2447</span>
+                </div>
+                <h3 class="card-title"><a href="#">Lame: HTB Retired Machine Walkthrough</a></h3>
+                <div class="card-excerpt">
+                    Exploiting Samba usermap script vulnerability for root access. Classic beginner box.
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 1 week ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3 - CTF - SQL Injection -->
+        <div class="writeup-card" data-category="ctf medium">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999a81ac6f5601ab21e9_offers-card4.webp');">
+                <span class="card-category">CTF</span>
+                <span class="card-difficulty difficulty-medium">MEDIUM</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>SQLMap Advanced</span>
+                    <span>Web · SQLi</span>
+                </div>
+                <h3 class="card-title"><a href="#">Time-Based Blind SQL Injection with Exfiltration</a></h3>
+                <div class="card-excerpt">
+                    Bypassing WAF and extracting database schema character by character using time delays.
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 2 weeks ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4 - HackTheBox - Blue -->
+        <div class="writeup-card" data-category="htb easy">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999a37c8c3579dcd46cb_offers-card7.webp');">
+                <span class="card-category">HackTheBox</span>
+                <span class="card-difficulty difficulty-easy">EASY</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>Blue</span>
+                    <span>EternalBlue · MS17-010</span>
+                </div>
+                <h3 class="card-title"><a href="#">Blue: EternalBlue Exploitation (MS17-010)</a></h3>
+                <div class="card-excerpt">
+                    Full walkthrough of exploiting Windows 7 with EternalBlue. Reverse shell and privilege escalation.
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 3 weeks ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 5 - TryHackMe - Steel Mountain -->
+        <div class="writeup-card" data-category="thm medium">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999b5b21e92c15393c11_offers-card5.webp');">
+                <span class="card-category">TryHackMe</span>
+                <span class="card-difficulty difficulty-medium">MEDIUM</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>Steel Mountain</span>
+                    <span>Windows · OSCP</span>
+                </div>
+                <h3 class="card-title"><a href="#">Steel Mountain: HTTP File Server 2.3 Exploitation</a></h3>
+                <div class="card-excerpt">
+                    Exploiting Rejetto HFS, privilege escalation via vulnerable service, and Meterpreter.
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 1 month ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 6 - Research - Buffer Overflow -->
+        <div class="writeup-card" data-category="research hard">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999aeeb5cb3b5cbdc425_offers-card6.webp');">
+                <span class="card-category">Research</span>
+                <span class="card-difficulty difficulty-hard">HARD</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>x64 Buffer Overflow</span>
+                    <span>ASLR · DEP</span>
+                </div>
+                <h3 class="card-title"><a href="#">Modern x64 Buffer Overflow with ROP Chain</a></h3>
+                <div class="card-excerpt">
+                    Bypassing ASLR and DEP on Windows 10 x64 using Return Oriented Programming. Full chain from crash to calc.
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 2 months ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 7 - HackTheBox - Legacy -->
+        <div class="writeup-card" data-category="htb easy">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999975a0f3c1e666ee5e_offers-card2.webp');">
+                <span class="card-category">HackTheBox</span>
+                <span class="card-difficulty difficulty-easy">EASY</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>Legacy</span>
+                    <span>MS08-067</span>
+                </div>
+                <h3 class="card-title"><a href="#">Legacy: MS08-067 NetAPI Exploitation</a></h3>
+                <div class="card-excerpt">
+                    Classic Windows XP/2003 vulnerability. Direct root access via Metasploit and manual exploitation.
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 2 months ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 8 - CTF - Reverse Engineering -->
+        <div class="writeup-card" data-category="ctf hard">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999a0f79830abb0ccbd5_offers-card8.webp');">
+                <span class="card-category">CTF</span>
+                <span class="card-difficulty difficulty-hard">HARD</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>ELF Crackme</span>
+                    <span>Ghidra · Angr</span>
+                </div>
+                <h3 class="card-title"><a href="#">Reversing Obfuscated ELF with Symbolic Execution</a></h3>
+                <div class="card-excerpt">
+                    Using angr to brute force a 16-character flag from a heavily obfuscated binary. No brute force, all symbolic.
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 3 months ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+        <div class="page-btn active">1</div>
+        <div class="page-btn">2</div>
+        <div class="page-btn">3</div>
+        <div class="page-btn">4</div>
+        <div class="page-btn">5</div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>© 2024 Cyb3r3lla · Security Writeups & Research</p>
+        <p style="margin-top: 0.5rem; color: #4a5568; font-size: 0.85rem;">All writeups are for educational purposes only.</p>
+    </div>
+
+    <script>
+        // FILTER FUNCTIONALITY
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                const cards = document.querySelectorAll('.writeup-card');
+                
+                cards.forEach(card => {
+                    const categories = card.dataset.category.split(' ');
+                    if (filter === 'all' || categories.includes(filter)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // MENU BUTTON
+        document.getElementById('top-menu-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Menu - Navigate to Home page for full navigation');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
