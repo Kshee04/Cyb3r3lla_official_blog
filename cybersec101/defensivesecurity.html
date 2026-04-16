@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyb3r3lla · Defensive Security Intro · SOC & DFIR Deep Dive</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== CYB3R3LLA DEFENSIVE SECURITY STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Chakra Petch', sans-serif;
+            background: #0a0c10;
+            color: #e2e8f0;
+            line-height: 1.6;
+            padding-top: 80px;
+        }
+
+        /* TOP NAVIGATION */
+        .cyber-top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 2.5rem;
+            background: rgba(6, 8, 12, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.4);
+            z-index: 10000;
+            font-family: 'Chakra Petch', sans-serif;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .cyber-logo a {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-decoration: none;
+            background: linear-gradient(145deg, #c084fc, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 12px rgba(168,85,247,0.5);
+        }
+
+        .cyber-nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .cyber-nav-links a {
+            color: #f0f0ff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            padding: 0.5rem 0;
+        }
+
+        .cyber-nav-links a:hover {
+            color: #c084fc;
+            text-shadow: 0 0 8px #a78bfa;
+        }
+
+        .cyber-nav-links a.active {
+            color: #c084fc;
+            border-bottom: 2px solid #a78bfa;
+        }
+
+        .menu-btn {
+            background: rgba(139, 92, 246, 0.25);
+            padding: 0.5rem 1.8rem;
+            border-radius: 40px;
+            border: 1px solid #a78bfa;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .menu-btn:hover {
+            background: #7e5bef;
+            border-color: white;
+        }
+
+        /* ARTICLE HEADER */
+        .article-header {
+            background: linear-gradient(145deg, #0f1117, #080a0e);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-header::after {
+            content: "defensive.security.soc.dfir";
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(139, 92, 246, 0.1);
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .article-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .article-header h1 span {
+            background: linear-gradient(145deg, #c084fc, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* MAIN CONTENT */
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        /* SECTION STYLES */
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.4);
+            display: inline-block;
+        }
+
+        .subsection-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem;
+            color: #c084fc;
+        }
+
+        .subsection-title-small {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1.2rem 0 0.8rem;
+            color: #a78bfa;
+        }
+
+        /* DIAGRAM BOX */
+        .diagram-box {
+            background: rgba(10, 12, 18, 0.8);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .diagram-title {
+            text-align: center;
+            color: #a78bfa;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* CALLOUT BOX FOR IOC */
+        .ioc-callout {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid #a78bfa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .ioc-callout h4 {
+            color: #c084fc;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* TABLES */
+        .cyber-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: rgba(18, 22, 30, 0.6);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .cyber-table th,
+        .cyber-table td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .cyber-table th {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c084fc;
+            font-weight: 600;
+        }
+
+        .cyber-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* GRID FOR CARDS */
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .task-card {
+            background: rgba(18, 22, 30, 0.6);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .task-card:hover {
+            border-color: #a78bfa;
+            background: rgba(22, 26, 34, 0.8);
+        }
+
+        .task-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #c084fc;
+        }
+
+        .task-card p {
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        /* CODE BLOCKS */
+        pre {
+            background: #0a0c10;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(139, 92, 246, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid #a78bfa;
+            color: #c084fc;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        /* FLOW DIAGRAM */
+        .flow-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .flow-node {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid #a78bfa;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .flow-arrow {
+            color: #a78bfa;
+            font-size: 1.5rem;
+        }
+
+        .feedback-loop {
+            margin-top: 1rem;
+            text-align: center;
+            color: #a78bfa;
+            font-size: 0.85rem;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+            margin: 2rem 0;
+        }
+
+        .footer {
+            background: #080a0e;
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 2rem;
+            text-align: center;
+            color: #718096;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .cyber-top-nav {
+                padding: 0.6rem 1.2rem;
+            }
+            body {
+                padding-top: 70px;
+            }
+            .article-header h1 {
+                font-size: 2rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .flow-diagram {
+                flex-direction: column;
+            }
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TOP NAVIGATION -->
+    <div class="cyber-top-nav">
+        <div class="cyber-logo">
+            <a href="../index.html">Cyb3r3lla</a>
+        </div>
+        <div class="cyber-nav-links">
+            <a href="../index.html">Home</a>
+            <a href="../writeups.html">Writeups</a>
+            <a href="binary-exploitation.html">Binary Exp</a>
+            <a href="#" id="top-menu-button" class="menu-btn">Back to Home</a>
+        </div>
+    </div>
+
+    <!-- ARTICLE HEADER -->
+    <div class="article-header">
+        <h1>/ <span>defensive security</span> /</h1>
+        <p>SOC · Threat Intelligence · DFIR · Malware Analysis · Defense in Depth</p>
+        <div class="article-meta">
+            <span>By Cyb3r3lla</span>
+            <span>March 2026</span>
+            <span>14 min read</span>
+            <span>Blue Team · SOC · DFIR</span>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content-container">
+
+        <!-- INTRO -->
+        <div class="section">
+            <h2 class="section-title">Introduction</h2>
+            <p>Offensive security gets the spotlight—finding bugs, breaking things, capturing flags. But defensive security is what keeps organizations running. This guide covers the core concepts of defensive security: the five essential tasks every defender performs, the role of a Security Operations Center (SOC), threat intelligence, digital forensics, incident response, malware analysis, and how defense in depth applies to threat intelligence.</p>
+            <p>Whether you're preparing for the TryHackMe Defensive Security Intro room or building a foundation in blue team operations, this is your starting point.</p>
+        </div>
+
+        <!-- PART 1: FIVE CORE DEFENSIVE TASKS -->
+        <div class="section">
+            <h2 class="section-title">1. The Five Core Defensive Tasks</h2>
+            <p>Before diving into SOC and DFIR, understand the foundational tasks that every defensive security program relies on.</p>
+
+            <div class="task-grid">
+                <div class="task-card">
+                    <h4>User Cyber Security Awareness</h4>
+                    <p>Training users to recognize phishing, use strong passwords, and report incidents. Users are the primary entry point—the majority of attacks begin with phishing.</p>
+                </div>
+                <div class="task-card">
+                    <h4>Documenting and Managing Assets</h4>
+                    <p>You cannot protect what you do not know exists. Inventory all hardware, software, cloud services, and data assets.</p>
+                </div>
+                <div class="task-card">
+                    <h4>Updating and Patching Systems</h4>
+                    <p>Attackers exploit known vulnerabilities. Regular patching closes the door. CVSS scores help prioritize critical fixes.</p>
+                </div>
+                <div class="task-card">
+                    <h4>Preventative Security Devices</h4>
+                    <p>Firewalls control traffic. Intrusion Prevention Systems (IPS) block malicious activity in real-time based on signatures and rules.</p>
+                </div>
+                <div class="task-card">
+                    <h4>Logging and Monitoring</h4>
+                    <p>If you do not log it, you cannot detect it. SIEM aggregation and 24/7 monitoring are essential for detection.</p>
+                </div>
+            </div>
+
+            <div class="diagram-box">
+                <div class="diagram-title">The Five Layers of Defensive Security</div>
+                <pre style="background: transparent; border: none; text-align: center; font-size: 0.75rem;">
+    ┌─────────────────────────────────────────────────────────┐
+    │              USER AWARENESS (Training)                  │
+    │         "The weakest link is also the first line"       │
+    └─────────────────────────────────────────────────────────┘
+                              ↓
+    ┌─────────────────────────────────────────────────────────┐
+    │              ASSET MANAGEMENT (Inventory)               │
+    │            "Know what you need to protect"              │
+    └─────────────────────────────────────────────────────────┘
+                              ↓
+    ┌─────────────────────────────────────────────────────────┐
+    │              PATCH MANAGEMENT (Vulnerabilities)         │
+    │            "Close the doors before they open"           │
+    └─────────────────────────────────────────────────────────┘
+                              ↓
+    ┌─────────────────────────────────────────────────────────┐
+    │              PREVENTATIVE DEVICES (Firewall + IPS)      │
+    │         "Block the bad traffic before it enters"        │
+    └─────────────────────────────────────────────────────────┘
+                              ↓
+    ┌─────────────────────────────────────────────────────────┐
+    │              LOGGING & MONITORING (Detection)           │
+    │      "If you can't see it, you can't stop it"           │
+    └─────────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+        </div>
+
+        <!-- PART 2: SECURITY OPERATIONS CENTER (SOC) -->
+        <div class="section">
+            <h2 class="section-title">2. Security Operations Center (SOC)</h2>
+            <p>A SOC is a team of cybersecurity professionals monitoring the network 24/7 to detect malicious activity. They do not always fix issues—they detect, triage, and escalate.</p>
+
+            <h3 class="subsection-title">The Four Pillars of SOC Monitoring</h3>
+
+            <table class="cyber-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>What It Means</th>
+                        <th>Detection Method</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Vulnerabilities</strong></td>
+                        <td>Weaknesses that could be exploited</td>
+                        <td>Vulnerability scanners, threat feeds</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Policy Violations</strong></td>
+                        <td>Users breaking security rules</td>
+                        <td>DLP, web proxies, email filters</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Unauthorized Activity</strong></td>
+                        <td>Stolen credentials used by attackers</td>
+                        <td>Geolocation anomalies, impossible travel, beaconing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Network Intrusions</strong></td>
+                        <td>Active exploitation in progress</td>
+                        <td>IDS/IPS signatures, SIEM correlation, EDR alerts</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="diagram-box">
+                <div class="diagram-title">SOC Alert Triage Flow</div>
+                <pre style="background: transparent; border: none;">
+    Raw Logs → SIEM Correlation → Alert Generated → Analyst Review
+                                                         ↓
+                                              ┌──────────┴──────────┐
+                                              ↓                     ↓
+                                         False Positive       True Positive
+                                              ↓                     ↓
+                                          Closed/Log         Containment
+                                                         & Investigation
+                </pre>
+            </div>
+        </div>
+
+        <!-- PART 3: THREAT INTELLIGENCE -->
+        <div class="section">
+            <h2 class="section-title">3. Threat Intelligence</h2>
+            <p><strong>Definition:</strong> Actionable knowledge about adversaries—who they are, what they want, how they operate.</p>
+            <p><strong>Key Distinction:</strong> Intelligence is not data. Data is raw logs. Intelligence is processed, analyzed, and actionable.</p>
+
+            <h3 class="subsection-title">Adversary Types</h3>
+            <table class="cyber-table">
+                <thead>
+                    <tr>
+                        <th>Adversary</th>
+                        <th>Motivation</th>
+                        <th>Target Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Nation-state</td><td>Political advantage, espionage</td><td>Government, critical infrastructure</td></tr>
+                    <tr><td>Ransomware group</td><td>Financial profit</td><td>Hospitals, corporations, schools</td></tr>
+                    <tr><td>Hacktivist</td><td>Ideological statement</td><td>Organizations they oppose</td></tr>
+                    <tr><td>Insider threat</td><td>Revenge, financial gain</td><td>Their own employer</td></tr>
+                    <tr><td>Cybercriminal</td><td>Financial fraud</td><td>Banks, e-commerce</td></tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">The Intelligence Cycle</h3>
+            <div class="flow-diagram">
+                <div class="flow-node">Collection</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">Processing</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">Analysis</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node">Dissemination</div>
+            </div>
+            <div class="feedback-loop">↺ Feedback loop: New intelligence improves collection priorities</div>
+
+            <h3 class="subsection-title">TTPs (Tactics, Techniques, Procedures)</h3>
+            <table class="cyber-table">
+                <thead>
+                    <tr><th>Term</th><th>Definition</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Tactic</strong></td><td>Adversary's goal</td><td>Initial access, persistence, privilege escalation</td></tr>
+                    <tr><td><strong>Technique</strong></td><td>How they achieve it</td><td>Phishing, exploiting public-facing application</td></tr>
+                    <tr><td><strong>Procedure</strong></td><td>Specific implementation</td><td>Spear-phishing with COVID-19 themed PDF</td></tr>
+                </tbody>
+            </table>
+            <p><strong>Why TTPs matter:</strong> IOCs (IPs, domains) change daily. TTPs change slowly. Understanding how an adversary operates enables detection even when infrastructure changes.</p>
+
+            <!-- IOC CALLOUT BOX - NEW SECTION -->
+            <div class="ioc-callout">
+                <h4>Indicator of Compromise (IOC)</h4>
+                <p><strong>Definition:</strong> An Indicator of Compromise is a piece of forensic evidence that suggests a system has been compromised or is currently under attack. IOCs are the "digital breadcrumbs" left behind by adversaries during their operations.</p>
+
+                <p><strong>Common Types of IOCs:</strong></p>
+                <table class="cyber-table" style="margin: 0.75rem 0;">
+                    <thead><tr><th>Type</th><th>Examples</th><th>What It Reveals</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Network</strong></td><td>IP addresses, domain names, URLs, DNS queries</td><td>Command & control servers</td></tr>
+                        <tr><td><strong>File</strong></td><td>File hashes (MD5, SHA1, SHA256), file names, paths</td><td>Specific malicious files to hunt for</td></tr>
+                        <tr><td><strong>Behavioral</strong></td><td>Registry keys, process names, scheduled tasks</td><td>How malware persists on a system</td></tr>
+                        <tr><td><strong>Email</strong></td><td>Sender addresses, subject lines, attachment names</td><td>Phishing campaign indicators</td></tr>
+                        <tr><td><strong>Memory</strong></td><td>Process injection patterns, API call sequences</td><td>In-memory-only attacks (fileless malware)</td></tr>
+                    </tbody>
+                </table>
+
+                <p><strong>IOC vs TTP:</strong></p>
+                <table class="cyber-table" style="margin: 0.75rem 0;">
+                    <thead><tr><th></th><th>IOC</th><th>TTP</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>What it is</strong></td><td>Evidence of compromise</td><td>Adversary behavior</td></tr>
+                        <tr><td><strong>Stability</strong></td><td>Changes quickly (attackers rotate infrastructure)</td><td>Changes slowly (how they operate)</td></tr>
+                        <tr><td><strong>Use</strong></td><td>Detect known threats</td><td>Hunt for unknown threats</td></tr>
+                        <tr><td><strong>Example</strong></td><td>IP 185.130.5.253</td><td>Spear-phishing with password-protected ZIP attachments</td></tr>
+                    </tbody>
+                </table>
+
+                <p><strong>IOC Lifecycle:</strong></p>
+                <table class="cyber-table" style="margin: 0.75rem 0;">
+                    <thead><tr><th>Stage</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Discovery</strong></td><td>IOC identified through malware analysis, threat hunting, or external intelligence</td></tr>
+                        <tr><td><strong>Validation</strong></td><td>Verified against multiple sources; false positives eliminated</td></tr>
+                        <tr><td><strong>Operationalization</strong></td><td>Pushed to security controls (firewalls, EDR, SIEM)</td></tr>
+                        <tr><td><strong>Detection</strong></td><td>Alerts triggered when IOC is observed</td></tr>
+                        <tr><td><strong>Response</strong></td><td>Incident response initiated</td></tr>
+                        <tr><td><strong>Retirement</strong></td><td>IOC removed when no longer relevant</td></tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Why IOCs Matter:</strong> IOCs enable detection, historical hunting, prevention through blocking, and sharing with the community. However, they have limitations: short shelf life, lack of context, evadable by polymorphic malware, and reactive nature. This is why TTPs are equally important.</p>
+
+                <pre style="margin-top: 0.75rem; font-size: 0.7rem;">
+Example: Ryuk Ransomware IOCs
+
+Network:      domain: ryuk-c2[.]com | IP: 185.130.5.253
+File:         SHA256: 3f4d5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f | filename: ryuk.exe
+Behavioral:   registry: HKCU\...\Run\svchost | process: vssadmin.exe delete shadows
+Email:        sender: accounts@legitimate-looking-domain[.]com | subject: "URGENT: Invoice"
+                </pre>
+            </div>
+
+            <h3 class="subsection-title">Threat Intelligence Outputs</h3>
+            <table class="cyber-table">
+                <thead><tr><th>Level</th><th>Audience</th><th>Content</th></tr></thead>
+                <tbody>
+                    <tr><td>Strategic</td><td>Executives</td><td>Long-term trends, adversary motivations</td></tr>
+                    <tr><td>Tactical</td><td>SOC managers, engineers</td><td>Specific TTPs, detection strategies</td></tr>
+                    <tr><td>Operational</td><td>Analysts, responders</td><td>IOCs to block, hunt queries</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PART 3.5: DEFENSE IN DEPTH IN THREAT INTELLIGENCE -->
+        <div class="section">
+            <h2 class="section-title">4. Defense in Depth in Threat Intelligence</h2>
+            <p><strong>Defense in Depth</strong> is the strategy of using multiple, overlapping layers of security so that if one layer fails, others still protect the asset. No single control is perfect. This principle applies directly to threat intelligence across collection, analysis, and operationalization.</p>
+
+            <h3 class="subsection-title">Layer 1: Collection Sources (Multiple Feeds)</h3>
+            <p>No single intelligence source is complete or trustworthy. Defense in Depth requires pulling from diverse, overlapping sources.</p>
+            <table class="cyber-table">
+                <thead><tr><th>Layer</th><th>Source Type</th><th>Examples</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Internal</strong></td><td>Your own telemetry</td><td>Firewall logs, DNS queries, endpoint detection, proxy logs</td></tr>
+                    <tr><td><strong>Commercial</strong></td><td>Paid threat feeds</td><td>Recorded Future, CrowdStrike, VirusTotal Enterprise</td></tr>
+                    <tr><td><strong>Open Source</strong></td><td>OSINT</td><td>AbuseIPDB, AlienVault OTX, MISP communities, security researchers</td></tr>
+                    <tr><td><strong>Information Sharing</strong></td><td>Sector-specific</td><td>ISACs (FS-ISAC for finance, MS-ISAC for government)</td></tr>
+                    <tr><td><strong>Honeypots</strong></td><td>Your own sensors</td><td>Systems designed to attract attackers, revealing TTPs</td></tr>
+                </tbody>
+            </table>
+            <p><strong>Why multiple sources matter:</strong> One feed misses a new IOC. Another feed flags false positives. Internal logs confirm whether intelligence is relevant to your environment.</p>
+
+            <h3 class="subsection-title">Layer 2: Intelligence Analysis (Multiple Validation)</h3>
+            <p>Raw intelligence must be analyzed through multiple lenses before becoming actionable.</p>
+            <table class="cyber-table">
+                <thead><tr><th>Layer</th><th>Purpose</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Confidence Scoring</strong></td><td>Is this IOC from a reliable source? How many independent sources confirm it?</td></tr>
+                    <tr><td><strong>Context Enrichment</strong></td><td>Does this IP belong to a known threat group? What TTPs are associated?</td></tr>
+                    <tr><td><strong>Relevance Filtering</strong></td><td>Does this threat target our industry, geography, or technology stack?</td></tr>
+                    <tr><td><strong>False Positive Screening</strong></td><td>Is this actually legitimate traffic misidentified?</td></tr>
+                </tbody>
+            </table>
+            <p><strong>Defense in Depth here:</strong> No single analyst or tool makes the call. Intelligence is validated through cross-referencing multiple feeds, sandbox verification, and threat hunting to confirm presence before alerting.</p>
+
+            <h3 class="subsection-title">Layer 3: Operationalization (Multiple Detection Layers)</h3>
+            <p>Threat intelligence feeds into multiple defensive layers—pure Defense in Depth.</p>
+
+            <div class="diagram-box">
+                <div class="diagram-title">Intelligence Across Defense Layers</div>
+                <pre style="background: transparent; border: none; font-size: 0.75rem;">
+                    THREAT INTELLIGENCE
+                           │
+        ┌──────────────────┼──────────────────┐
+        ↓                  ↓                  ↓
+   ┌─────────┐      ┌─────────┐      ┌─────────┐
+   │Network  │      │Endpoint │      │Identity │
+   │Layer    │      │Layer    │      │Layer    │
+   ├─────────┤      ├─────────┤      ├─────────┤
+   │Firewall │      │AV/EDR   │      │MFA      │
+   │IPS      │      │Hunting  │      │Anomaly  │
+   │DNS Sink │      │Queries  │      │Detection│
+   └─────────┘      └─────────┘      └─────────┘
+        │                  │                  │
+        └──────────────────┼──────────────────┘
+                           ↓
+                   ┌───────────────┐
+                   │  Email Layer  │
+                   │  (Filtering,  │
+                   │   Sandboxing) │
+                   └───────────────┘
+                </pre>
+            </div>
+
+            <table class="cyber-table">
+                <thead><tr><th>Defensive Layer</th><th>How Intelligence Is Applied</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Network</strong></td><td>Block IOCs (IPs, domains) at firewall; update IPS signatures; sinkhole malicious DNS</td></tr>
+                    <tr><td><strong>Endpoint</strong></td><td>Hunt for IOCs across endpoints; update EDR detection rules; isolate compromised hosts</td></tr>
+                    <tr><td><strong>Identity</strong></td><td>Detect login attempts from malicious IPs; flag impossible travel patterns</td></tr>
+                    <tr><td><strong>Email</strong></td><td>Block sender domains/addresses; detonate attachments in sandbox</td></tr>
+                </tbody>
+            </table>
+
+            <h3 class="subsection-title">Why This Matters: The Attacker's View</h3>
+            <p>Attackers know defenders use multiple layers. They design operations to evade any single control.</p>
+            <table class="cyber-table">
+                <thead><tr><th>Attacker Tactic</th><th>Evades</th><th>But Gets Caught By</th></tr></thead>
+                <tbody>
+                    <tr><td>Use encrypted traffic</td><td>Network signature detection</td><td>Endpoint behavior analysis</td></tr>
+                    <tr><td>Use legitimate credentials</td><td>Network perimeter controls</td><td>Identity anomaly detection</td></tr>
+                    <tr><td>Live-off-the-land tools</td><td>AV signatures</td><td>EDR behavioral rules, logging</td></tr>
+                    <tr><td>Rotate infrastructure</td><td>Static IOC blocks</td><td>TTP-based hunting</td></tr>
+                </tbody>
+            </table>
+            <p><strong>Key takeaway:</strong> Defense in Depth with threat intelligence means even if an attacker evades the firewall block, they still trigger endpoint detection. Even if they evade endpoint, they trigger identity alerts. Each layer provides independent protection.</p>
+        </div>
+
+        <!-- PART 4: DIGITAL FORENSICS AND INCIDENT RESPONSE (DFIR) -->
+        <div class="section">
+            <h2 class="section-title">5. Digital Forensics and Incident Response (DFIR)</h2>
+
+            <h3 class="subsection-title">Digital Forensics</h3>
+            <p><strong>Definition:</strong> The application of science to investigate crimes and establish facts using digital evidence.</p>
+
+            <h4 class="subsection-title-small">Four Forensic Disciplines</h4>
+            <table class="cyber-table">
+                <thead><tr><th>Discipline</th><th>What It Analyzes</th><th>What It Reveals</th> </thead>
+                <tbody>
+                    <tr><td>File System</td><td>Forensic image of storage</td><td>Installed programs, created files, deleted files</td> </tr>
+                    <tr><td>Memory</td><td>RAM capture (volatile)</td><td>Running processes, network connections, injected code</td> </tr>
+                    <tr><td>System Logs</td><td>Windows Event Logs, syslog</td><td>User logins, process executions, system changes</td> </tr>
+                    <tr><td>Network Logs</td><td>PCAP, flow data</td><td>C2 communication, data exfiltration, lateral movement</td> </tr>
+                </tbody>
+             </table>
+            <p><strong>Key Principle:</strong> <code>"The artifact never lies. The question is whether you found it."</code></p>
+
+            <h3 class="subsection-title">Incident Response</h3>
+            <p><strong>Definition:</strong> Methodology for handling cyber attacks—reduce damage, recover quickly.</p>
+
+            <h4 class="subsection-title-small">Incident Response Framework (SANS PICERL)</h4>
+            <table class="cyber-table">
+                <thead> </thead>
+                <tbody>
+                    <tr><td><strong>Preparation</strong></td><td>Build IR team, develop runbooks, stock tools</td><td>Be ready before incident occurs</td></tr>
+                    <tr><td><strong>Detection & Analysis</strong></td><td>Detect via SIEM, validate, scope impact</td><td>Understand what you are dealing with</td></tr>
+                    <tr><td><strong>Containment</strong></td><td>Short-term: disconnect, block IPs. Long-term: build clean systems</td><td>Stop the bleeding</td></tr>
+                    <tr><td><strong>Eradication</strong></td><td>Remove malware, backdoors, persistence</td><td>Eliminate attacker presence</td></tr>
+                    <tr><td><strong>Recovery</strong></td><td>Restore from clean backups, monitor</td><td>Return to normal operations</td></tr>
+                    <tr><td><strong>Lessons Learned</strong></td><td>Root cause analysis, update controls</td><td>Improve for next time</td></tr>
+                </tbody>
+             </table>
+
+            <div class="diagram-box">
+                <div class="diagram-title">Incident Response Flow with Feedback Loop</div>
+                <pre style="background: transparent; border: none; text-align: center;">
+    Preparation → Detection → Analysis → Containment → Eradication → Recovery → Lessons Learned
+         ↑                                                                              ↓
+         └──────────────────────────────Feedback Loop───────────────────────────────────┘
+                </pre>
+            </div>
+        </div>
+
+        <!-- PART 5: MALWARE ANALYSIS -->
+        <div class="section">
+            <h2 class="section-title">6. Malware Analysis</h2>
+            <p><strong>Definition:</strong> Examining malicious software to understand its behavior and impact.</p>
+
+            <h3 class="subsection-title">Common Malware Types</h3>
+            <table class="cyber-table">
+                <thead> </thead>
+                <tbody>
+                    <tr><td><strong>Virus</strong></td><td>Self-replicating code attached to programs</td><td>Alters, overwrites, deletes files; spreads</td></tr>
+                    <tr><td><strong>Trojan Horse</strong></td><td>Disguised as legitimate software</td><td>Shows desirable function, hides malicious one</td></tr>
+                    <tr><td><strong>Ransomware</strong></td><td>Encrypts user files</td><td>Demands payment for decryption key</td></tr>
+                </tbody>
+             </table>
+
+            <h3 class="subsection-title">Analysis Approaches</h3>
+            <table class="cyber-table">
+                <thead> </thead>
+                <tbody>
+                    <tr><td><strong>Static Analysis</strong></td><td>Examine without executing</td><td>Safe, no risk</td><td>Misses runtime behavior, obfuscated code</td></tr>
+                    <tr><td><strong>Dynamic Analysis</strong></td><td>Run in sandbox, monitor behavior</td><td>Shows real activity</td><td>Malware may detect sandbox</td></tr>
+                </tbody>
+             </table>
+
+            <div class="diagram-box">
+                <div class="diagram-title">Malware Analysis Outputs</div>
+                <pre style="background: transparent; border: none;">
+    Malware Sample → Analysis → Outputs:
+                                  ├── IOCs (IPs, domains, hashes) → Feed to SOC
+                                  ├── Behavioral description → Understand impact
+                                  ├── Detection signatures → Update AV/IPS
+                                  └── Recovery guidance → Remove and restore
+                </pre>
+            </div>
+        </div>
+
+        <!-- PART 6: THE COMPLETE WORKFLOW -->
+        <div class="section">
+            <h2 class="section-title">7. The Complete Defensive Security Workflow</h2>
+
+            <div class="diagram-box">
+                <div class="diagram-title">SOC + DFIR + Threat Intelligence Integration</div>
+                <pre style="background: transparent; border: none; font-size: 0.7rem; line-height: 1.8;">
+                         ┌─────────────────────────────────────┐
+                         │        THREAT INTELLIGENCE         │
+                         │      (Know the adversary)         │
+                         └─────────────────┬───────────────────┘
+                                           │
+                                           ↓
+                         ┌─────────────────────────────────────┐
+                         │           SOC MONITORING            │
+                         │   Detect using IOCs + TTPs         │
+                         └─────────────────┬───────────────────┘
+                                           │
+                                           ↓
+                         ┌─────────────────────────────────────┐
+                         │      INCIDENT RESPONSE TRIGGERED    │
+                         └─────────────────┬───────────────────┘
+                                           │
+                    ┌──────────────────────┴──────────────────────┐
+                    ↓                                             ↓
+    ┌───────────────────────────────┐           ┌───────────────────────────────┐
+    │      DIGITAL FORENSICS        │           │       MALWARE ANALYSIS        │
+    │   Preserve and analyze        │           │     Understand the code       │
+    │   evidence                    │           │                               │
+    └───────────────┬───────────────┘           └───────────────┬───────────────┘
+                    │                                             │
+                    └──────────────────────┬──────────────────────┘
+                                           ↓
+                         ┌─────────────────────────────────────┐
+                         │      POST-INCIDENT ACTIVITY         │
+                         │   Lessons Learned · New IOCs       │
+                         └─────────────────┬───────────────────┘
+                                           │
+                                           ↓
+                         ┌─────────────────────────────────────┐
+                         │   FEEDS BACK TO THREAT INTELLIGENCE │
+                         └─────────────────────────────────────┘
+                </pre>
+            </div>
+            <p><strong>Key Takeaway:</strong> SOC and DFIR are not separate silos. SOC detects. DFIR investigates and creates intelligence that makes SOC smarter. Each incident improves the next detection. Defense in Depth ensures that even if one layer fails, others remain effective.</p>
+        </div>
+
+        <!-- QUICK REFERENCE -->
+        <div class="section">
+            <h2 class="section-title">Quick Reference: Key Terms</h2>
+            <table class="cyber-table">
+                <thead> </thead>
+                <tbody>
+                    <tr><td><strong>SOC</strong></td><td>Security Operations Center—24/7 monitoring team</td></tr>
+                    <tr><td><strong>SIEM</strong></td><td>Security Information and Event Management—centralized logging and alerting</td></tr>
+                    <tr><td><strong>Threat Intelligence</strong></td><td>Actionable knowledge about adversaries</td></tr>
+                    <tr><td><strong>IOC</strong></td><td>Indicator of Compromise—IPs, domains, file hashes indicating attack</td></tr>
+                    <tr><td><strong>TTP</strong></td><td>Tactics, Techniques, Procedures—how adversaries operate</td></tr>
+                    <tr><td><strong>DFIR</strong></td><td>Digital Forensics and Incident Response—investigation and recovery</td></tr>
+                    <tr><td><strong>Defense in Depth</strong></td><td>Multiple overlapping layers of security</td></tr>
+                </tbody>
+             </table>
+        </div>
+
+        <!-- CONCLUSION -->
+        <div class="section">
+            <h2 class="section-title">Conclusion</h2>
+            <p>Defensive security is the foundation that keeps organizations running. While offensive security gets the spotlight, blue team professionals are the ones detecting intrusions, responding to incidents, and ensuring business continuity.</p>
+            <p>Ready to apply these concepts? Head over to TryHackMe's Defensive Security Intro room and get hands-on with real SOC scenarios.</p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>© 2026 Cyb3r3lla · Defensive Security & Blue Team Operations</p>
+        <p style="margin-top: 0.5rem; color: #4a5568; font-size: 0.85rem;">All techniques are for educational purposes on authorized systems only.</p>
+    </div>
+
+    <script>
+        document.getElementById('top-menu-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>

