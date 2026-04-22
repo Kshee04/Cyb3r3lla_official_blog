@@ -403,7 +403,7 @@
             <a href="index.html" class="active">Home</a>
             <a href="writeups.html">Writeups</a>
             <a href="binary-exploitation.html">Binary Exp</a>
-            <a href="#" id="top-menu-button" class="menu-btn">Menu</a>//
+            <a href="#" id="top-menu-button" class="menu-btn">Menu</a>
         </div>
     </div>
 
@@ -412,7 +412,7 @@
         <h1>/ <span>writeups</span> /</h1>
         <p>Capture The Flag · Security Research · Vulnerability Analysis</p>
         <div style="margin-top: 1.5rem; color: #a78bfa; font-size: 0.9rem; letter-spacing: 2px;">
-            <span>47 writeups</span> <span class="slash">/</span> <span>13 machines</span> <span class="slash">/</span> <span>10 challenges</span>
+            <span>49 writeups</span> <span class="slash">/</span> <span>15 machines</span> <span class="slash">/</span> <span>10 challenges</span>
         </div>
     </div>
 
@@ -432,7 +432,7 @@
 
     <!-- WRITEUPS GRID -->
     <div class="writeups-grid">
-        <!-- NEW CARD: picoCTF - Flag in Flame (ADDED FIRST - FORENSICS) -->
+        <!-- CARD 1: picoCTF - Flag in Flame -->
         <div class="writeup-card" data-category="ctf forensics easy">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999a0f79830abb0ccbd5_offers-card8.webp');">
                 <span class="card-category">picoCTF · Forensics</span>
@@ -459,7 +459,7 @@
             </div>
         </div>
 
-        <!-- NEW CARD: picoCTF - Guess My Cheese (ADDED SECOND - CRYPTOGRAPHY) -->
+        <!-- CARD 2: picoCTF - Guess My Cheese -->
         <div class="writeup-card" data-category="ctf crypto easy">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999b5b21e92c15393c11_offers-card5.webp');">
                 <span class="card-category">picoCTF · Crypto</span>
@@ -486,7 +486,7 @@
             </div>
         </div>
 
-<!-- CARD 1 - TryHackMe - Scheme Catcher -->
+        <!-- CARD 3: TryHackMe - Scheme Catcher -->
         <div class="writeup-card" data-category="thm hard">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999b37c8c3e335cd46cc_offers-card3.webp');">
                 <span class="card-category">TryHackMe</span>
@@ -513,7 +513,61 @@
             </div>
         </div>
 
-        <!-- CARD 1 - TryHackMe - Pickle Rick -->
+        <!-- CARD 4: HackTheBox - Kobold -->
+        <div class="writeup-card" data-category="htb easy">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999a37c8c3579dcd46cb_offers-card7.webp');">
+                <span class="card-category">HackTheBox</span>
+                <span class="card-difficulty difficulty-easy">EASY</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>Kobold</span>
+                    <span>RCE · Docker Breakout</span>
+                </div>
+                <h3 class="card-title"><a href="kobold.html">Kobold: MCPJam RCE & Docker Privilege Escalation</a></h3>
+                <div class="card-excerpt">
+                    Exploiting CVE-2026-23744 (unauthenticated RCE) in MCPJam Inspector v1.4.2, then leveraging Docker group membership with a privileged container to mount the host filesystem and obtain root access.
+                </div>
+                <div class="card-footer">
+                    <a href="kobold.html" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 Today</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 5: HackTheBox - TwoMillion (ADDED AFTER KOBOLD) -->
+        <div class="writeup-card" data-category="htb easy">
+            <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999975a0f3e55b66ee5f_offers-card1.webp');">
+                <span class="card-category">HackTheBox</span>
+                <span class="card-difficulty difficulty-easy">EASY</span>
+            </div>
+            <div class="card-content">
+                <div class="card-meta">
+                    <span>TwoMillion</span>
+                    <span>API · Command Injection · PrivEsc</span>
+                </div>
+                <h3 class="card-title"><a href="2million.html">TwoMillion: API Abuse & Command Injection Walkthrough</a></h3>
+                <div class="card-excerpt">
+                    A complete walkthrough of TwoMillion from HackTheBox. Covers invite code generation, API enumeration, privilege escalation to admin, command injection via VPN generation, reverse shell, credential reuse, and user flag capture. Root access in progress.
+                </div>
+                <div class="card-footer">
+                    <a href="2million.html" class="read-more">
+                        Read writeup
+                        <svg width="14" height="14" viewBox="0 0 16 14" fill="none"><path d="M7.08789 0.164054V1.74609C7.08789 1.83593 7.12695 1.92187 7.19531 1.98241L12.123 6.2578L1.125 6.2578C1.03906 6.2578 0.96875 6.32812 0.96875 6.41405L0.96875 7.58593C0.96875 7.67187 1.03906 7.74218 1.125 7.74218L12.123 7.74218L7.19531 12.0176C7.12695 12.0762 7.08789 12.1621 7.08789 12.2539V13.8359C7.08789 13.9687 7.24609 14.041 7.3457 13.9531L14.8164 7.47069C14.884 7.4121 14.9382 7.33965 14.9754 7.25827C15.0125 7.17689 15.0318 7.08848 15.0318 6.99901C15.0318 6.90955 15.0125 6.82114 14.9754 6.73976C14.9382 6.65838 14.884 6.58593 14.8164 6.52734L7.3457 0.0468664C7.24414 -0.0410242 7.08789 0.0312414 7.08789 0.164054Z" fill="currentColor"/></svg>
+                    </a>
+                    <div class="card-stats">
+                        <span>📅 Today</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 6: TryHackMe - Pickle Rick -->
         <div class="writeup-card" data-category="thm easy">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999b37c8c3e335cd46cc_offers-card3.webp');">
                 <span class="card-category">TryHackMe</span>
@@ -540,7 +594,7 @@
             </div>
         </div>
 
-        <!-- CARD 2 - HackTheBox - Lame -->
+        <!-- CARD 7: HackTheBox - Lame -->
         <div class="writeup-card" data-category="htb easy">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999975a0f3e55b66ee5f_offers-card1.webp');">
                 <span class="card-category">HackTheBox</span>
@@ -567,7 +621,7 @@
             </div>
         </div>
 
-        <!-- CARD 3 - CTF - SQL Injection -->
+        <!-- CARD 8: CTF - SQL Injection -->
         <div class="writeup-card" data-category="ctf medium">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999a81ac6f5601ab21e9_offers-card4.webp');">
                 <span class="card-category">CTF</span>
@@ -594,7 +648,7 @@
             </div>
         </div>
 
-        <!-- CARD 4 - HackTheBox - Blue -->
+        <!-- CARD 9: HackTheBox - Blue -->
         <div class="writeup-card" data-category="htb easy">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999a37c8c3579dcd46cb_offers-card7.webp');">
                 <span class="card-category">HackTheBox</span>
@@ -621,7 +675,7 @@
             </div>
         </div>
 
-        <!-- CARD 5 - TryHackMe - Steel Mountain -->
+        <!-- CARD 10: TryHackMe - Steel Mountain -->
         <div class="writeup-card" data-category="thm medium">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999b5b21e92c15393c11_offers-card5.webp');">
                 <span class="card-category">TryHackMe</span>
@@ -648,7 +702,7 @@
             </div>
         </div>
 
-        <!-- CARD 6 - Research - Buffer Overflow -->
+        <!-- CARD 11: Research - Buffer Overflow -->
         <div class="writeup-card" data-category="research hard">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999aeeb5cb3b5cbdc425_offers-card6.webp');">
                 <span class="card-category">Research</span>
@@ -675,7 +729,7 @@
             </div>
         </div>
 
-        <!-- CARD 7 - HackTheBox - Legacy -->
+        <!-- CARD 12: HackTheBox - Legacy -->
         <div class="writeup-card" data-category="htb easy">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999975a0f3c1e666ee5e_offers-card2.webp');">
                 <span class="card-category">HackTheBox</span>
@@ -702,7 +756,7 @@
             </div>
         </div>
 
-        <!-- CARD 8 - CTF - Reverse Engineering -->
+        <!-- CARD 13: CTF - Reverse Engineering -->
         <div class="writeup-card" data-category="ctf hard">
             <div class="card-image" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://cdn.prod.website-files.com/63526ba1499532655d644f80/6358999a0f79830abb0ccbd5_offers-card8.webp');">
                 <span class="card-category">CTF</span>

